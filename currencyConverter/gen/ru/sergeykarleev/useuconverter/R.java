@@ -34,14 +34,15 @@ public final class R {
     }
     public static final class id {
         public static final int LinearLayout=0x7f090000;
-        public static final int action_settings=0x7f09000c;
-        public static final int datePicker=0x7f09000b;
+        public static final int action_settings=0x7f09000d;
+        public static final int btnDate=0x7f090002;
+        public static final int btnRequest=0x7f090009;
+        public static final int datePicker=0x7f09000c;
         public static final int etConvEUR=0x7f090008;
         public static final int etConvUSD=0x7f090007;
-        public static final int spCurrently=0x7f09000a;
+        public static final int spCurrently=0x7f09000b;
         public static final int tab1=0x7f090001;
-        public static final int tab2=0x7f090009;
-        public static final int tvDate=0x7f090002;
+        public static final int tab2=0x7f09000a;
         public static final int tvEURLabel=0x7f090005;
         public static final int tvEURValue=0x7f090006;
         public static final int tvUSDLabel=0x7f090003;

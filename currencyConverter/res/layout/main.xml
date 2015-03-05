@@ -37,16 +37,14 @@
                     android:layout_height="match_parent"
                     android:orientation="vertical" >
 
-                    <TextView
-                        android:id="@+id/tvDate"
+                    <Button
+                        android:id="@+id/btnDate"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="@dimen/tabs_margin_top_bottom"
-                        android:layout_marginTop="@dimen/tabs_margin_top_bottom"
-                        android:clickable="true"
-                        android:gravity="center"
-                        android:onClick="onclick"
-                        android:text="Текущая дата"
+                        android:layout_marginTop="@dimen/tabs_margin_top_bottom"                        
+                        android:gravity="center"                        
+                        android:text="Выбор даты"
                         android:textSize="20dp"
                         android:textStyle="bold" />
 
@@ -104,7 +102,9 @@
                             android:id="@+id/etConvUSD"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_weight="1"
+                            android:layout_weight="1"                            
+                            android:numeric="decimal"
+                            android:inputType="numberDecimal"
                             android:hint="@string/usdLabel" />
 
                         <TextView
@@ -117,8 +117,16 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
+                            android:numeric="decimal"
+                            android:inputType="numberDecimal"                            
                             android:hint="@string/eurLabel" />
                     </LinearLayout>
+                    
+                    <Button 
+                        android:id="@+id/btnRequest"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Получить котировку"/>
                 </LinearLayout>
 
                 <LinearLayout
