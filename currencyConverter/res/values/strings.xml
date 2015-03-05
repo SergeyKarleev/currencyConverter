@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">currencyConverter</string>
+
+    <!-- labels -->
+    <string name="usdLabel">USD</string>
+    <string name="eurLabel">EUR</string>
+
+    <!-- spinner -->
+    <string-array name="currentlies">
+        <item>USD</item>
+        <item>EUR</item>
+    </string-array>
+    
+    <!-- названия вкладок -->
+    <string name="tab_1">Конвертер</string>
+    <string name="tab_2">График</string>
+
+</resources>
