@@ -150,7 +150,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
-                                android:text="USD"/>
+                                android:text="USD" />
 
                             <RadioButton
                                 android:id="@+id/rbEUR"
@@ -166,7 +166,6 @@
                         android:layout_height="wrap_content"
                         android:orientation="horizontal" >
 
-                        
                         <Spinner
                             android:id="@+id/spMonth"
                             android:layout_width="match_parent"
@@ -174,12 +173,23 @@
                             android:layout_weight="1"
                             android:entries="@array/month" />
 
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" />
+
                         <Spinner
                             android:id="@+id/spYear"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:entries="@array/year" />
+                    </LinearLayout>
+                    <LinearLayout 
+                        android:id="@+id/llGraph"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+                        
                     </LinearLayout>
                 </LinearLayout>
             </FrameLayout>
