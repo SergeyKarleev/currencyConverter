@@ -29,17 +29,17 @@ public class MyGraphClass extends GraphView{
 	 * @return объект GraphView
 	 */
 	
-	public GraphView createGraph(ArrayList<Float> prices){		
+	public GraphView createGraph(Double[] prices){		
 		LineGraphSeries<DataPoint> gSeries = new LineGraphSeries<DataPoint>(generateData(prices));
 		gView.addSeries(gSeries);		
 		return gView;		
 	}
 	
-	 private DataPoint[] generateData(ArrayList<Float> prices) {
-	        int count = prices.size();
+	 private DataPoint[] generateData(Double[] prices) {
+	        int count = prices.length ;
 	        DataPoint[] values = new DataPoint[count];
 	        for (int x=0; x<count; x++) {	                 
-	            double y = prices.get(x);
+	            double y = prices[x];
 	            DataPoint v = new DataPoint(x+1, y);
 	            values[x] = v;
 	        }

@@ -1,5 +1,7 @@
 package ru.sergeykarleev.useuconverter;
 
+import java.util.ArrayList;
+
 import ru.sergeykarleev.useuconverter.R.string;
 import android.app.Activity;
 import android.app.DatePickerDialog;
@@ -22,7 +24,11 @@ import android.widget.Toast;
 import android.widget.TabHost.OnTabChangeListener;
 import android.widget.TextView;
 
-public class MainActivity extends Activity implements OnClickListener,
+/**
+ * @author sergey
+ *
+ */
+public class MainActivity extends Activity implements
 		OnKeyListener {
 
 	final static int DIALOG_DATE = 1;
@@ -41,14 +47,18 @@ public class MainActivity extends Activity implements OnClickListener,
 	int mYear = 2015;
 	int mMonth = 0;
 	int mDay = 1;
+	
+	MyGraphClass mGraphObject;
+	MyCurrencyClass mCurrencyObject;
 
 	static float multiplicator_USD_EUR = 1;
+	
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
-
+		
 		btnDate = (Button) findViewById(R.id.btnDate);
 
 		llGraph = (LinearLayout) findViewById(R.id.llGraph);
@@ -60,9 +70,8 @@ public class MainActivity extends Activity implements OnClickListener,
 
 		TabHost tabHost = (TabHost) findViewById(android.R.id.tabhost);
 		tabCreator(tabHost);
-
-	}
-
+	}	
+	
 	private void tabCreator(TabHost tabHost) {
 		tabHost.setup();
 
@@ -126,6 +135,10 @@ public class MainActivity extends Activity implements OnClickListener,
 			// TODO:‘ункци€ получени€ массива котировок на выбранный мес€ц
 			// TODO: ћетод класса MyGraphClass построени€ графика на основе полученного массива
 			// котировок (м.б. вызвана из предыдущей функции)
+			
+			Double[] test = {12.5,11.3,10.4};		
+			createGraph(test);
+			
 			break;
 		default:
 			break;
@@ -159,11 +172,15 @@ public class MainActivity extends Activity implements OnClickListener,
 		}
 		return false;
 	}
-
-	@Override
-	public void onClick(View v) {
-		// TODO Auto-generated method stub
-
+	
+	
+	
+	/**ћетод отображени€ графика во второй вкладке в контейнере LinearLayout
+	 * @param prices массив котировок
+	 */
+	private void createGraph(Double[] prices){
+		llGraph.removeAllViews();
+		mGraphObject = new MyGraphClass(this);
+		llGraph.addView(mGraphObject.createGraph(prices));		
 	}
-
 }
