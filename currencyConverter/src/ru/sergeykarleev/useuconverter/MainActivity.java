@@ -16,6 +16,7 @@ import android.view.View.OnKeyListener;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TabHost;
 import android.widget.Toast;
 import android.widget.TabHost.OnTabChangeListener;
@@ -31,10 +32,11 @@ public class MainActivity extends Activity implements OnClickListener,
 	TextView tvEURValue;
 
 	Button btnDate;
-	Button btnRequest;
 
 	EditText etConvUSD;
 	EditText etConvEUR;
+
+	LinearLayout llGraph;
 
 	int mYear = 2015;
 	int mMonth = 0;
@@ -48,10 +50,8 @@ public class MainActivity extends Activity implements OnClickListener,
 		setContentView(R.layout.main);
 
 		btnDate = (Button) findViewById(R.id.btnDate);
-		btnDate.setOnClickListener(this);
 
-		btnRequest = (Button) findViewById(R.id.btnRequest);
-		btnRequest.setOnClickListener(this);
+		llGraph = (LinearLayout) findViewById(R.id.llGraph);
 
 		etConvUSD = (EditText) findViewById(R.id.etConvUSD);
 		etConvUSD.setOnKeyListener(this);
@@ -108,12 +108,24 @@ public class MainActivity extends Activity implements OnClickListener,
 		}
 	};
 
-	@Override
-	public void onClick(View v) {
+	public void onclick(View v) {
+		// Toast.makeText(this, "onclick", Toast.LENGTH_SHORT).show();
 		switch (v.getId()) {
 		case R.id.btnDate:
-			Toast.makeText(this, "зададим дату", Toast.LENGTH_SHORT).show();
 			showDialog(DIALOG_DATE);
+			break;
+		case R.id.btnRequest:
+			Toast.makeText(this, "Получаем котировку", Toast.LENGTH_SHORT)
+					.show();
+			// TODO: функция получения котировки на определённую дату
+			// TODO: функция отображения полученного курса
+			
+			break;
+		case R.id.btnGetGraph:
+			Toast.makeText(this, "Строим график", Toast.LENGTH_SHORT).show();
+			// TODO:Функция получения массива котировок на выбранный месяц
+			// TODO: Метод класса MyGraphClass построения графика на основе полученного массива
+			// котировок (м.б. вызвана из предыдущей функции)
 			break;
 		default:
 			break;
@@ -123,27 +135,35 @@ public class MainActivity extends Activity implements OnClickListener,
 
 	@Override
 	public boolean onKey(View v, int keyCode, KeyEvent event) {
-		
+
 		float USD = 0;
 		float EUR = 0;
-		
+
 		if (event.getAction() != KeyEvent.ACTION_DOWN
 				|| (keyCode != KeyEvent.KEYCODE_ENTER))
 			return false;
 
 		switch (v.getId()) {
-		case R.id.etConvUSD:		
-				etConvEUR.setText(String.valueOf(Float.valueOf(etConvUSD.getText().toString())*multiplicator_USD_EUR));
+		case R.id.etConvUSD:
+			etConvEUR.setText(String.valueOf(Float.valueOf(etConvUSD.getText()
+					.toString()) * multiplicator_USD_EUR));
 			break;
 		case R.id.etConvEUR:
-			if (multiplicator_USD_EUR==0)
+			if (multiplicator_USD_EUR == 0)
 				return false;
-			etConvUSD.setText(String.valueOf(Float.valueOf(etConvEUR.getText().toString())/multiplicator_USD_EUR));
+			etConvUSD.setText(String.valueOf(Float.valueOf(etConvEUR.getText()
+					.toString()) / multiplicator_USD_EUR));
 			break;
 		default:
 			break;
 		}
 		return false;
+	}
+
+	@Override
+	public void onClick(View v) {
+		// TODO Auto-generated method stub
+
 	}
 
 }

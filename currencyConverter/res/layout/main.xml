@@ -44,6 +44,7 @@
                         android:layout_marginBottom="@dimen/tabs_margin_top_bottom"
                         android:layout_marginTop="@dimen/tabs_margin_top_bottom"
                         android:gravity="center"
+                        android:onClick="onclick"
                         android:text="Выбор даты"
                         android:textSize="20dp"
                         android:textStyle="bold" />
@@ -126,6 +127,7 @@
                         android:id="@+id/btnRequest"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:onClick="onclick"
                         android:text="Получить котировку" />
                 </LinearLayout>
 
@@ -150,6 +152,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
+                                android:checked="true"
                                 android:text="USD" />
 
                             <RadioButton
@@ -173,10 +176,6 @@
                             android:layout_weight="1"
                             android:entries="@array/month" />
 
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content" />
-
                         <Spinner
                             android:id="@+id/spYear"
                             android:layout_width="match_parent"
@@ -184,12 +183,19 @@
                             android:layout_weight="1"
                             android:entries="@array/year" />
                     </LinearLayout>
-                    <LinearLayout 
+
+                    <Button
+                        android:id="@+id/btnGetGraph"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:onClick="onclick"
+                        android:text="Построить график" />
+
+                    <LinearLayout
                         android:id="@+id/llGraph"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-                        
+                        android:orientation="horizontal" >
                     </LinearLayout>
                 </LinearLayout>
             </FrameLayout>

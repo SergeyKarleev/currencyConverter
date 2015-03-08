@@ -11,12 +11,17 @@ import com.jjoe64.graphview.series.LineGraphSeries;
 import com.jjoe64.graphview.series.Series;
 
 
+/**Класс работает над построением графика на основе полученного массива значений (котировок)
+ * @author SergeyKarleev
+ *
+ */
 public class MyGraphClass extends GraphView{
 
 	GraphView gView;	
 	
 	public MyGraphClass(Context context) {		
 		super(context);		
+		gView = new GraphView(context);
 	}
 	
 	/**Метод возвращает готовый график для отображения его в контейнере
