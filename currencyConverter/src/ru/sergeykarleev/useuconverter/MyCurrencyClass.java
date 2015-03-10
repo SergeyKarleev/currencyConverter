@@ -1,6 +1,15 @@
 package ru.sergeykarleev.useuconverter;
 
+import java.io.BufferedInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.List;
+
 import android.content.Context;
+import android.os.AsyncTask;
 import android.widget.Toast;
 
 /**
@@ -73,6 +82,13 @@ public class MyCurrencyClass {
 		dateEnd = getEndDate(month, year);		  
 	}
 
+	public String getDate(){
+		if (mode == MODE_DDMMYY)
+			return "date: "+date;
+		else
+			return "dateStart: "+dateStart+" dateEnd: "+dateEnd;
+		
+	}
 	
 	
 	/**Определение количества дней в месяце
@@ -113,12 +129,38 @@ public class MyCurrencyClass {
 	}
 	
 	
-	/**Класс, умеющий извлекать различную информацию из полученного от ЦБ файла XML
-	 * @author SergeyKarleev
-	 *
-	 */
-	public class MyXMLParser {
-		
-	}
-
+	
+//	 public class NewThread extends AsyncTask<String, Void, String> 
+//	    {
+//	        //public List<StringWrapper> wrapp = new ArrayList<StringWrapper>();
+//	        @Override
+//	        protected String doInBackground(String... params) 
+//	        {
+//	            
+//	            try 
+//	            {
+//	                URL url = new URL("http://katolik.ru/mir.feed?type=rss");
+//	                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+//	                if (conn.getResponseCode() == HttpURLConnection.HTTP_OK)
+//	                {
+//	                    InputStream stream = conn.getInputStream();
+//	                   // wrapp.add(new StringWrapper("dsdsdsd", conn.toString()));
+//	                    
+//	                }               
+//	 
+//	            } 
+//	            catch (Exception e) 
+//	            {
+//	          //      wrapp.add(new StringWrapper("Жопа", "Большая Жопа"));
+//	                e.printStackTrace();
+//	            }
+//	            return null;
+//	        }
+//	        @Override
+//	        protected void onPostExecute(String result) 
+//	        {
+//	                           
+//	        }       
+//	        
+//	    }   
 }

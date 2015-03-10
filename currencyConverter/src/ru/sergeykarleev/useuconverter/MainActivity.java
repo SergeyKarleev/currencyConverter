@@ -7,6 +7,7 @@ import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.DatePickerDialog.OnDateSetListener;
 import android.app.Dialog;
+import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -38,6 +39,7 @@ public class MainActivity extends Activity implements
 	TextView tvEURValue;
 
 	Button btnDate;
+	Context context = this;
 
 	EditText etConvUSD;
 	EditText etConvEUR;
@@ -134,8 +136,10 @@ public class MainActivity extends Activity implements
 			mMonth = monthOfYear + 1;
 			mDay = dayOfMonth;
 			btnDate.setText(mDay + "/" + mMonth + "/" + mYear);
-			mCurrencyObject = new MyCurrencyClass(dayOfMonth, dayOfMonth+1, year);
+			mCurrencyObject = new MyCurrencyClass(dayOfMonth, monthOfYear+1, year);			
 			
+			String date = mCurrencyObject.getDate().toString();	
+			Toast.makeText(context, date, Toast.LENGTH_SHORT).show();
 		}
 	};
 
