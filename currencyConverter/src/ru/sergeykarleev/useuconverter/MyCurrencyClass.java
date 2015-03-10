@@ -20,6 +20,7 @@ import android.widget.Toast;
  */
 public class MyCurrencyClass {
 
+
 	final static int MODE_DDMMYY = 1;
 	final static int MODE_MMYY = 2;
 
@@ -35,6 +36,9 @@ public class MyCurrencyClass {
 	int day;
 	int month;
 	int year;
+	
+	double multiplicator_usd_rur = 1;
+	double multiplicator_eur_rur = 1;
 	
 	String date;
 	String dateStart;
@@ -106,6 +110,15 @@ public class MyCurrencyClass {
 
 		sb.append(year);
 		return sb.toString();
+	}
+	
+	
+	/**Класс, умеющий извлекать различную информацию из полученного от ЦБ файла XML
+	 * @author SergeyKarleev
+	 *
+	 */
+	public class MyXMLParser {
+		
 	}
 
 }
