@@ -6,11 +6,13 @@
     <!-- labels -->
     <string name="usdLabel">USD</string>
     <string name="eurLabel">EUR</string>
+    <string name="rurLabel">RUR</string>
 
     <!-- spinner -->
     <string-array name="currentlies">
         <item>USD</item>
         <item>EUR</item>
+        <item>RUR</item>
     </string-array>
     
     <string-array name="month">

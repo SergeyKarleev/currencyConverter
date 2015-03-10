@@ -41,6 +41,8 @@ public class MainActivity extends Activity implements
 
 	EditText etConvUSD;
 	EditText etConvEUR;
+	EditText etConvRURusd;
+	EditText etConvRUReur;
 
 	LinearLayout llGraph;
 
@@ -51,7 +53,8 @@ public class MainActivity extends Activity implements
 	MyGraphClass mGraphObject;
 	MyCurrencyClass mCurrencyObject;
 
-	static float multiplicator_USD_EUR = 1;
+	private static float multiplicator_USD = 1;
+	private static float multiplicator_EUR = 1;
 	
 
 	@Override
@@ -67,11 +70,28 @@ public class MainActivity extends Activity implements
 		etConvUSD.setOnKeyListener(this);
 		etConvEUR = (EditText) findViewById(R.id.etConvEUR);
 		etConvEUR.setOnKeyListener(this);
+		
+		etConvRURusd = (EditText) findViewById(R.id.etConvRURusd);
+		etConvRURusd.setOnKeyListener(this);
+		etConvRUReur = (EditText) findViewById(R.id.etConvRUReur);
+		etConvRUReur.setOnKeyListener(this);
+		
 
 		TabHost tabHost = (TabHost) findViewById(android.R.id.tabhost);
 		tabCreator(tabHost);
 	}	
 	
+		
+	public static void setMultiplicator_USD_EUR(float multiplicator_USD_EUR) {
+		MainActivity.multiplicator_USD = multiplicator_USD_EUR;
+	}
+
+
+
+	public static void setMultiplicator_EUR_USD(float multiplicator_EUR_USD) {
+		MainActivity.multiplicator_EUR = multiplicator_EUR_USD;
+	}
+
 	private void tabCreator(TabHost tabHost) {
 		tabHost.setup();
 
@@ -114,6 +134,8 @@ public class MainActivity extends Activity implements
 			mMonth = monthOfYear + 1;
 			mDay = dayOfMonth;
 			btnDate.setText(mDay + "/" + mMonth + "/" + mYear);
+			mCurrencyObject = new MyCurrencyClass(dayOfMonth, dayOfMonth+1, year);
+			
 		}
 	};
 
@@ -124,11 +146,8 @@ public class MainActivity extends Activity implements
 			showDialog(DIALOG_DATE);
 			break;
 		case R.id.btnRequest:
-			Toast.makeText(this, "Получаем котировку", Toast.LENGTH_SHORT)
-					.show();
 			// TODO: функция получения котировки на определённую дату
-			// TODO: функция отображения полученного курса
-			
+			// TODO: функция отображения полученного курса			
 			break;
 		case R.id.btnGetGraph:
 			Toast.makeText(this, "Строим график", Toast.LENGTH_SHORT).show();
@@ -137,8 +156,7 @@ public class MainActivity extends Activity implements
 			// котировок (м.б. вызвана из предыдущей функции)
 			
 			Double[] test = {12.5,11.3,10.4};		
-			createGraph(test);
-			
+			createGraph(test);			
 			break;
 		default:
 			break;
@@ -158,14 +176,24 @@ public class MainActivity extends Activity implements
 
 		switch (v.getId()) {
 		case R.id.etConvUSD:
-			etConvEUR.setText(String.valueOf(Float.valueOf(etConvUSD.getText()
-					.toString()) * multiplicator_USD_EUR));
+			etConvRURusd.setText(String.valueOf(Float.valueOf(etConvUSD.getText()
+					.toString()) * multiplicator_USD));
 			break;
-		case R.id.etConvEUR:
-			if (multiplicator_USD_EUR == 0)
-				return false;
-			etConvUSD.setText(String.valueOf(Float.valueOf(etConvEUR.getText()
-					.toString()) / multiplicator_USD_EUR));
+		case R.id.etConvEUR:			
+			etConvRUReur.setText(String.valueOf(Float.valueOf(etConvEUR.getText()
+					.toString()) / multiplicator_EUR));
+			break;
+		case R.id.etConvRURusd:
+			if (multiplicator_USD == 0)
+				break;
+			etConvUSD.setText(String.valueOf(Float.valueOf(etConvRURusd.getText()
+					.toString()) / multiplicator_USD*1.0));
+			break;
+		case R.id.etConvRUReur:
+			if (multiplicator_EUR == 0)
+				break;
+			etConvEUR.setText(String.valueOf(Float.valueOf(etConvRUReur.getText()
+					.toString()) / multiplicator_EUR*1.0));
 			break;
 		default:
 			break;
