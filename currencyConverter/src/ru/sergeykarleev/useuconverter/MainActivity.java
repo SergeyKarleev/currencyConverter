@@ -58,8 +58,8 @@ public class MainActivity extends Activity implements OnKeyListener,
 
 	MyGraphClass mGraphObject;
 
-	private static float multiplicator_USD = 1;
-	private static float multiplicator_EUR = 1;
+	private double multiplicator_USD = 1;
+	private double multiplicator_EUR = 1;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -84,13 +84,6 @@ public class MainActivity extends Activity implements OnKeyListener,
 		tabCreator(tabHost);
 	}
 
-	public static void setMultiplicator_USD_EUR(float multiplicator_USD_EUR) {
-		MainActivity.multiplicator_USD = multiplicator_USD_EUR;
-	}
-
-	public static void setMultiplicator_EUR_USD(float multiplicator_EUR_USD) {
-		MainActivity.multiplicator_EUR = multiplicator_EUR_USD;
-	}
 
 	private void tabCreator(TabHost tabHost) {
 		tabHost.setup();
@@ -241,6 +234,13 @@ public class MainActivity extends Activity implements OnKeyListener,
 	public void onLoadFinished(Loader<String> loader, String data) {
 		Toast.makeText(context, data, Toast.LENGTH_LONG).show();
 		MyXMLParser mParser = new MyXMLParser(data);
+		multiplicator_EUR = mParser.getEUR();
+		multiplicator_USD = mParser.getUSD();
+		
+		
+		tvUSDValue.setText(String.valueOf(multiplicator_USD).toString());
+		tvEURValue.setText(String.valueOf(multiplicator_EUR).toString());
+		
 		Toast.makeText(context, "USD: "+mParser.getUSD()+" EUR: "+mParser.getEUR(), Toast.LENGTH_SHORT).show();
 		getLoaderManager().destroyLoader(ID_LOADER);
 	}

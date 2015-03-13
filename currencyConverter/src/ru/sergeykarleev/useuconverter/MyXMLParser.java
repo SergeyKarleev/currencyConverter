@@ -59,71 +59,55 @@ public class MyXMLParser {
 		factory.setNamespaceAware(true);
 		XmlPullParser parser = factory.newPullParser();
 		parser.setInput(new StringReader(xml));
+		
+		Boolean currentValuteUSD = false;
+		Boolean currentValuteEUR = false;
+		Boolean currentValue = false;
 
-		StringBuilder sb = new StringBuilder();
+		while (parser.getEventType() != XmlPullParser.END_DOCUMENT) {
+			switch (parser.getEventType()) {
+			case XmlPullParser.START_TAG:
+				if (parser.getAttributeCount() > 0) {
+					switch (parser.getAttributeValue(0)) {
+					case TAG_USD_ID:
+						currentValuteUSD = true;
+						break;
+					case TAG_EUR_ID:
+						currentValuteEUR = true;
 
-		while (parser.getEventType() != XmlPullParser.END_DOCUMENT) {			
-			
-			try {				
-				if (parser.getAttributeValue(0).equals(TAG_EUR_ID))
-				{
-					String tag = parser.getName();
-					sb.append("EURO: ");
-					
-					while (parser.getEventType()!=XmlPullParser.END_TAG && parser.getName().equals(tag))
-					{
-						try{
-							Log.d(LOG_TAG, parser.getName());
-						}catch(Exception e){}
-						if (parser.getEventType()==XmlPullParser.START_TAG && parser.getName().equals("Value"))
-							sb.append("yes");
-						parser.next();
-					}					
+						break;
+					default:
+						break;
+					}
 				}
-								
-				
-			} catch (Exception e) {
 
+				if (parser.getName().equals(TAG_VALUE)) {
+					currentValue = true;
+				}
+				break;
+			case XmlPullParser.END_TAG:
+				if (parser.getName().equals(TAG_NAME)) {
+					currentValuteUSD = false;
+					currentValuteEUR = false;
+				}
+				if (parser.getName().equals(TAG_VALUE) && currentValue) {
+					currentValue = false;
+				}
+				break;
+			case XmlPullParser.TEXT:
+				if (currentValuteUSD && currentValue)
+					USD = Double.parseDouble(parser.getText().replaceAll(",","."));			
+					
+				if (currentValuteEUR && currentValue)
+					EUR = Double.parseDouble(parser.getText().replaceAll(",","."));
+					
+				break;
+			default:
+				break;
 			}
 
-			// if (parser.getEventType()==XmlPullParser.START_TAG &&
-			// parser.getName()==TAG_NAME &&
-			// parser.getAttributeValue(0)==TAG_EUR_ID){
-			// while (parser.getName()!=TAG_VALUE ||
-			// parser.getEventType()!=XmlPullParser.END_DOCUMENT){
-			// try {
-			// parser.nextTag();
-			// } catch (IOException e) {
-			// // TODO Auto-generated catch block
-			// e.printStackTrace();
-			// }
-			// }
-			// if (parser.getName()==TAG_VALUE){
-			// parser.nextText();
-			// USD = Double.parseDouble(parser.getText().toString());
-			// }
-			// }
-			//
-			// if (parser.getEventType()==XmlPullParser.START_TAG &&
-			// parser.getName()==TAG_NAME &&
-			// parser.getAttributeValue(0)==TAG_USD_ID){
-			// while (parser.getName()!=TAG_VALUE ||
-			// parser.getEventType()!=XmlPullParser.END_DOCUMENT){
-			// try {
-			// parser.nextTag();
-			// } catch (IOException e) {
-			// // TODO Auto-generated catch block
-			// e.printStackTrace();
-			// }
-			// }
-			// if (parser.getName()==TAG_VALUE){
-			// parser.nextText();
-			// EUR = Double.parseDouble(parser.getText().toString());
-			// }
-			// }
 			parser.next();
-		}
-		Log.d(LOG_TAG, "StringBuilder: " + sb.toString());
-		Log.d(LOG_TAG, "Парсинг выполнен.\nUSD: " + USD + "\nEUR: " + EUR);
+		}		
+		//Log.d(LOG_TAG, "Парсинг выполнен.\nUSD: " + USD + "\nEUR: " + EUR);
 	}
 }
