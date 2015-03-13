@@ -240,6 +240,8 @@ public class MainActivity extends Activity implements OnKeyListener,
 	@Override
 	public void onLoadFinished(Loader<String> loader, String data) {
 		Toast.makeText(context, data, Toast.LENGTH_LONG).show();
+		MyXMLParser mParser = new MyXMLParser(data);
+		Toast.makeText(context, "USD: "+mParser.getUSD()+" EUR: "+mParser.getEUR(), Toast.LENGTH_SHORT).show();
 		getLoaderManager().destroyLoader(ID_LOADER);
 	}
 

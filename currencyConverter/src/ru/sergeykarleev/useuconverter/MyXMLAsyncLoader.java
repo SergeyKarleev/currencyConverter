@@ -34,14 +34,11 @@ public class MyXMLAsyncLoader extends AsyncTaskLoader<String> {
 		
 		try {
 			url = new URL(mRequest);
-			inputStream = url.openStream();
-			Log.d(LOG_TAG, "Возвращен текст");
+			inputStream = url.openStream();			
 			return new Scanner(inputStream).useDelimiter("\\A").next();
-		}catch (java.util.NoSuchElementException e) {
-			Log.d(LOG_TAG, e.toString());
+		}catch (java.util.NoSuchElementException e) {			
 			return e.toString();
-		}catch (IOException e1) {
-			Log.d(LOG_TAG, e1.toString());
+		}catch (IOException e1) {			
 			return e1.toString();
 		} 
 		
