@@ -27,11 +27,12 @@ import android.widget.Toast;
  * @author SergeyKarleev
  * 
  */
-public class MainActivity extends Activity implements OnKeyListener, LoaderCallbacks<String> {
+public class MainActivity extends Activity implements OnKeyListener,
+		LoaderCallbacks<String> {
 
 	final static int DIALOG_DATE = 1;
 	final static String LOG_TAG = "myLogs";
-	
+
 	final static int ID_LOADER = 1;
 
 	final String URL_DAY = "http://www.cbr.ru/scripts/XML_daily.asp?date_req=";
@@ -40,7 +41,7 @@ public class MainActivity extends Activity implements OnKeyListener, LoaderCallb
 
 	TextView tvUSDValue;
 	TextView tvEURValue;
-	
+
 	Button btnDate;
 	Context context = this;
 
@@ -64,7 +65,7 @@ public class MainActivity extends Activity implements OnKeyListener, LoaderCallb
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
-		
+
 		btnDate = (Button) findViewById(R.id.btnDate);
 
 		llGraph = (LinearLayout) findViewById(R.id.llGraph);
@@ -128,13 +129,13 @@ public class MainActivity extends Activity implements OnKeyListener, LoaderCallb
 
 		@Override
 		public void onDateSet(DatePicker view, int year, int monthOfYear,
-				int dayOfMonth) {			
+				int dayOfMonth) {
 			Calendar c = Calendar.getInstance();
 			c.set(year, monthOfYear, dayOfMonth);
 			SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 			String date = sdf.format(c.getTime());
 
-			btnDate.setText(date);			
+			btnDate.setText(date);
 			createRequest(URL_DAY + date);
 		}
 	};
@@ -214,25 +215,22 @@ public class MainActivity extends Activity implements OnKeyListener, LoaderCallb
 		llGraph.addView(mGraphObject.createGraph(prices));
 	}
 
-	
-	protected void createRequest(String request) 
-	{	
-		Log.d(LOG_TAG, "CreateRequest: "+request);
-		
+	protected void createRequest(String request) {
+		Log.d(LOG_TAG, "CreateRequest: " + request);
+
 		Bundle args = new Bundle();
 		args.putString("REQUEST", request);
-		getLoaderManager().initLoader(ID_LOADER, args, this);		
-		Loader<String> loader = getLoaderManager().getLoader(ID_LOADER);
+
+		getLoaderManager().initLoader(ID_LOADER, args, this);
+		Loader<String> loader = getLoaderManager().getLoader(ID_LOADER);	
 		loader.forceLoad();
-		
-		
-		Log.d(LOG_TAG, "getLoader start");
+
 	}
-	
+
 	@Override
 	public Loader<String> onCreateLoader(int id, Bundle args) {
 		Loader<String> loader = null;
-		if (id==ID_LOADER){
+		if (id == ID_LOADER) {
 			loader = new MyXMLAsyncLoader(this, args);
 			return loader;
 		}
@@ -240,17 +238,15 @@ public class MainActivity extends Activity implements OnKeyListener, LoaderCallb
 	}
 
 	@Override
-	public void onLoadFinished(Loader<String> loader,
-			String data) {
+	public void onLoadFinished(Loader<String> loader, String data) {
 		Toast.makeText(context, data, Toast.LENGTH_LONG).show();
-		
+		getLoaderManager().destroyLoader(ID_LOADER);
 	}
 
 	@Override
 	public void onLoaderReset(Loader<String> loader) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
-	
 }
