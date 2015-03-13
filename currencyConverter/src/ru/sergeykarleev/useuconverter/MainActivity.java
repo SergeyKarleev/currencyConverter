@@ -1,5 +1,6 @@
 package ru.sergeykarleev.useuconverter;
 
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
@@ -39,8 +40,8 @@ public class MainActivity extends Activity implements OnKeyListener,
 	// final String URL_MONTH =
 	// "http://www.cbr.ru/scripts/XML_dynamic.asp?date_req1=02/03/2001&date_req2=14/03/2001&VAL_NM_RQ=R01235";
 
-	TextView tvUSDValue;
-	TextView tvEURValue;
+	static TextView tvUSDValue;
+	static TextView tvEURValue;
 
 	Button btnDate;
 	Context context = this;
@@ -58,8 +59,8 @@ public class MainActivity extends Activity implements OnKeyListener,
 
 	MyGraphClass mGraphObject;
 
-	private double multiplicator_USD = 1;
-	private double multiplicator_EUR = 1;
+	private static double multiplicator_USD = 1;
+	private static double multiplicator_EUR = 1;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -175,23 +176,23 @@ public class MainActivity extends Activity implements OnKeyListener,
 
 		switch (v.getId()) {
 		case R.id.etConvUSD:
-			etConvRURusd.setText(String.valueOf(Float.valueOf(etConvUSD
+			etConvRURusd.setText(roundUp(Double.valueOf(etConvUSD
 					.getText().toString()) * multiplicator_USD));
 			break;
 		case R.id.etConvEUR:
-			etConvRUReur.setText(String.valueOf(Float.valueOf(etConvEUR
-					.getText().toString()) / multiplicator_EUR));
+			etConvRUReur.setText(roundUp(Double.valueOf(etConvEUR
+					.getText().toString()) * multiplicator_EUR));
 			break;
 		case R.id.etConvRURusd:
 			if (multiplicator_USD == 0)
 				break;
-			etConvUSD.setText(String.valueOf(Float.valueOf(etConvRURusd
+			etConvUSD.setText(roundUp(Double.valueOf(etConvRURusd
 					.getText().toString()) / multiplicator_USD * 1.0));
 			break;
 		case R.id.etConvRUReur:
 			if (multiplicator_EUR == 0)
 				break;
-			etConvEUR.setText(String.valueOf(Float.valueOf(etConvRUReur
+			etConvEUR.setText(roundUp(Double.valueOf(etConvRUReur
 					.getText().toString()) / multiplicator_EUR * 1.0));
 			break;
 		default:
@@ -200,18 +201,27 @@ public class MainActivity extends Activity implements OnKeyListener,
 		return false;
 	}
 
+	
+	/**Функция округления. Округляем валюту после конвертации до 4 знака после запятой. 
+	 */
+	public String roundUp(double value){
+		BigDecimal val = new BigDecimal(""+value).setScale(4, BigDecimal.ROUND_HALF_UP);		
+	    return val.toString(); 
+	}
+	
 	/**
 	 * Метод отображения графика во второй вкладке в контейнере LinearLayout
 	 * 
 	 * @param prices
 	 *            массив котировок
 	 */
-	private void createGraph(Double[] prices) {
+	protected void createGraph(Double[] prices) {
 		llGraph.removeAllViews();
 		mGraphObject = new MyGraphClass(this);
 		llGraph.addView(mGraphObject.createGraph(prices));
 	}
 
+	
 	protected void createRequest(String request) {
 		Log.d(LOG_TAG, "CreateRequest: " + request);
 
@@ -245,7 +255,7 @@ public class MainActivity extends Activity implements OnKeyListener,
 				
 		tvUSDValue.setText(String.valueOf(multiplicator_USD));
 		tvEURValue.setText(String.valueOf(multiplicator_EUR));
-		
+				
 		getLoaderManager().destroyLoader(ID_LOADER);
 	}
 
