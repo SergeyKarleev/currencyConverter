@@ -1,37 +1,30 @@
 package ru.sergeykarleev.useuconverter;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 
-import ru.sergeykarleev.useuconverter.R.string;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.DatePickerDialog.OnDateSetListener;
 import android.app.Dialog;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.Context;
+import android.content.Loader;
 import android.os.Bundle;
-
-import android.support.v4.content.Loader;
 import android.util.Log;
 import android.view.KeyEvent;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.View.OnKeyListener;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TabHost;
-import android.widget.Toast;
-import android.widget.TabHost.OnTabChangeListener;
 import android.widget.TextView;
+import android.widget.Toast;
 
 /**
- * @author sergey
+ * @author SergeyKarleev
  * 
  */
 public class MainActivity extends Activity implements OnKeyListener, LoaderCallbacks<String> {
@@ -47,7 +40,10 @@ public class MainActivity extends Activity implements OnKeyListener, LoaderCallb
 
 	TextView tvUSDValue;
 	TextView tvEURValue;
+	
 
+	TextView tvXMLBody;
+	
 	Button btnDate;
 	Context context = this;
 
@@ -72,6 +68,8 @@ public class MainActivity extends Activity implements OnKeyListener, LoaderCallb
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
 
+		tvXMLBody = (TextView) findViewById(R.id.tvXMLBody);
+		
 		btnDate = (Button) findViewById(R.id.btnDate);
 
 		llGraph = (LinearLayout) findViewById(R.id.llGraph);
@@ -135,16 +133,13 @@ public class MainActivity extends Activity implements OnKeyListener, LoaderCallb
 
 		@Override
 		public void onDateSet(DatePicker view, int year, int monthOfYear,
-				int dayOfMonth) {
-			// String date = dayOfMonth
-			// mCurrencyObject = new MyCurrencyClass(context, dayOfMonth,
-			// monthOfYear+1, year);
+				int dayOfMonth) {			
 			Calendar c = Calendar.getInstance();
 			c.set(year, monthOfYear, dayOfMonth);
 			SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 			String date = sdf.format(c.getTime());
 
-			btnDate.setText(date);
+			btnDate.setText(date);			
 			createRequest(URL_DAY + date);
 		}
 	};
@@ -224,21 +219,23 @@ public class MainActivity extends Activity implements OnKeyListener, LoaderCallb
 		llGraph.addView(mGraphObject.createGraph(prices));
 	}
 
-	public void testMessageXML(String message) {
-		Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
-
-	}
-
 	
 	protected void createRequest(String request) 
 	{	
+		Log.d(LOG_TAG, "CreateRequest: "+request);
+		
 		Bundle args = new Bundle();
 		args.putString("REQUEST", request);
-		getLoaderManager().initLoader(ID_LOADER, args, this);
+		getLoaderManager().initLoader(ID_LOADER, args, this);		
+		Loader<String> loader = getLoaderManager().getLoader(ID_LOADER);
+		loader.forceLoad();
+		
+		
+		Log.d(LOG_TAG, "getLoader start");
 	}
 	
 	@Override
-	public android.content.Loader<String> onCreateLoader(int id, Bundle args) {
+	public Loader<String> onCreateLoader(int id, Bundle args) {
 		Loader<String> loader = null;
 		if (id==ID_LOADER){
 			loader = new MyXMLAsyncLoader(this, args);
@@ -248,14 +245,14 @@ public class MainActivity extends Activity implements OnKeyListener, LoaderCallb
 	}
 
 	@Override
-	public void onLoadFinished(android.content.Loader<String> loader,
+	public void onLoadFinished(Loader<String> loader,
 			String data) {
-		// TODO Auto-generated method stub
-		
+		//Toast.makeText(context, data, Toast.LENGTH_SHORT).show();
+		tvXMLBody.setText(data);
 	}
 
 	@Override
-	public void onLoaderReset(android.content.Loader<String> loader) {
+	public void onLoaderReset(Loader<String> loader) {
 		// TODO Auto-generated method stub
 		
 	}
