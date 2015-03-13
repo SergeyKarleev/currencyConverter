@@ -41,9 +41,6 @@ public class MainActivity extends Activity implements OnKeyListener, LoaderCallb
 	TextView tvUSDValue;
 	TextView tvEURValue;
 	
-
-	TextView tvXMLBody;
-	
 	Button btnDate;
 	Context context = this;
 
@@ -67,8 +64,6 @@ public class MainActivity extends Activity implements OnKeyListener, LoaderCallb
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
-
-		tvXMLBody = (TextView) findViewById(R.id.tvXMLBody);
 		
 		btnDate = (Button) findViewById(R.id.btnDate);
 
@@ -247,8 +242,8 @@ public class MainActivity extends Activity implements OnKeyListener, LoaderCallb
 	@Override
 	public void onLoadFinished(Loader<String> loader,
 			String data) {
-		//Toast.makeText(context, data, Toast.LENGTH_SHORT).show();
-		tvXMLBody.setText(data);
+		Toast.makeText(context, data, Toast.LENGTH_LONG).show();
+		
 	}
 
 	@Override

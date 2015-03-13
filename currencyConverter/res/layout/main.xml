@@ -157,9 +157,7 @@
                         android:layout_height="wrap_content"
                         android:onClick="onclick"
                         android:text="Получить котировку" />
-                    <TextView android:id="@+id/tvXMLBody"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"/>
+                   
                 </LinearLayout>
 
                 <LinearLayout
