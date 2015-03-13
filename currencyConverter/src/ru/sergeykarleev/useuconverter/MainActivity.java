@@ -79,7 +79,11 @@ public class MainActivity extends Activity implements OnKeyListener,
 		etConvRURusd.setOnKeyListener(this);
 		etConvRUReur = (EditText) findViewById(R.id.etConvRUReur);
 		etConvRUReur.setOnKeyListener(this);
-
+		
+		tvUSDValue = (TextView) findViewById(R.id.tvUSDValue);
+		tvEURValue = (TextView) findViewById(R.id.tvEURValue);
+		
+		
 		TabHost tabHost = (TabHost) findViewById(android.R.id.tabhost);
 		tabCreator(tabHost);
 	}
@@ -217,8 +221,10 @@ public class MainActivity extends Activity implements OnKeyListener,
 		getLoaderManager().initLoader(ID_LOADER, args, this);
 		Loader<String> loader = getLoaderManager().getLoader(ID_LOADER);	
 		loader.forceLoad();
-
+		
 	}
+	
+	
 
 	@Override
 	public Loader<String> onCreateLoader(int id, Bundle args) {
@@ -232,16 +238,14 @@ public class MainActivity extends Activity implements OnKeyListener,
 
 	@Override
 	public void onLoadFinished(Loader<String> loader, String data) {
-		Toast.makeText(context, data, Toast.LENGTH_LONG).show();
+		Toast.makeText(context, data, Toast.LENGTH_SHORT).show();
 		MyXMLParser mParser = new MyXMLParser(data);
 		multiplicator_EUR = mParser.getEUR();
 		multiplicator_USD = mParser.getUSD();
+				
+		tvUSDValue.setText(String.valueOf(multiplicator_USD));
+		tvEURValue.setText(String.valueOf(multiplicator_EUR));
 		
-		
-		tvUSDValue.setText(String.valueOf(multiplicator_USD).toString());
-		tvEURValue.setText(String.valueOf(multiplicator_EUR).toString());
-		
-		Toast.makeText(context, "USD: "+mParser.getUSD()+" EUR: "+mParser.getEUR(), Toast.LENGTH_SHORT).show();
 		getLoaderManager().destroyLoader(ID_LOADER);
 	}
 
