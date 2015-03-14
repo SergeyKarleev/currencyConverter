@@ -15,7 +15,7 @@ import android.util.Log;
  * @author SergeyKarleev
  * 
  */
-public class MyXMLParser {
+public class MyDAYParser implements XMLParser{
 
 	final static String LOG_TAG = "myLogs";
 
@@ -30,14 +30,14 @@ public class MyXMLParser {
 	double USD = 0.0;
 	double EUR = 0.0;
 
-	public MyXMLParser(String xmlFile) {
+	public MyDAYParser(String xmlFile) {
 		super();
 
 		// TODO: реализовать проверку строки на техническую с ошибками или
 		// рабочую с данными
 		try {
 			Log.d(LOG_TAG, "Стартуем парсер");
-			startParser(xmlFile);
+			startParsing(xmlFile);
 		} catch (Exception e) {
 			Log.d(LOG_TAG, e.toString());
 			e.printStackTrace();
@@ -45,16 +45,8 @@ public class MyXMLParser {
 
 	}
 
-	public double getUSD() {
-		return USD;
-	}
-
-	public double getEUR() {
-		return EUR;
-	}
-
-	private void startParser(String xml) throws XmlPullParserException,
-			IOException {
+	@Override
+	public void startParsing(String xml) throws XmlPullParserException, IOException {
 		XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
 		factory.setNamespaceAware(true);
 		XmlPullParser parser = factory.newPullParser();
@@ -108,6 +100,20 @@ public class MyXMLParser {
 
 			parser.next();
 		}		
-		//Log.d(LOG_TAG, "Парсинг выполнен.\nUSD: " + USD + "\nEUR: " + EUR);
+	}
+
+	@Override
+	public double getValute(int valute) {
+		switch (valute) {
+		case VALUTE_USD:
+			return USD;
+			
+		case VALUTE_EUR:
+			return EUR;
+			
+		default:
+			break;
+		}
+		return 0;
 	}
 }

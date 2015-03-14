@@ -251,16 +251,15 @@ public class MainActivity extends Activity implements OnKeyListener,
 		Toast.makeText(context, data, Toast.LENGTH_SHORT).show();
 		switch (loader.getId()) {
 		case LOADER_DAY:
-			MyXMLParser mParser = new MyXMLParser(data);
-			multiplicator_EUR = mParser.getEUR();
-			multiplicator_USD = mParser.getUSD();
+			MyDAYParser mParser = new MyDAYParser(data);
+			multiplicator_EUR = mParser.getValute(mParser.VALUTE_EUR);
+			multiplicator_USD = mParser.getValute(mParser.VALUTE_USD);
 					
 			tvUSDValue.setText(String.valueOf(multiplicator_USD));
 			tvEURValue.setText(String.valueOf(multiplicator_EUR));
 			getLoaderManager().destroyLoader(LOADER_DAY);
 			break;
-		case LOADER_MONTH:
-			
+		case LOADER_MONTH:			
 			getLoaderManager().destroyLoader(LOADER_MONTH);
 			break;
 		default:
