@@ -67,7 +67,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:gravity="right"                            
+                            android:gravity="right"
                             android:text="null" />
                     </LinearLayout>
 
@@ -122,7 +122,8 @@
                             android:inputType="numberDecimal"
                             android:numeric="decimal" />
                     </LinearLayout>
-                                        <LinearLayout
+
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal" >
@@ -150,14 +151,6 @@
                             android:inputType="numberDecimal"
                             android:numeric="decimal" />
                     </LinearLayout>
-
-                    <Button
-                        android:id="@+id/btnRequest"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:onClick="onclick"
-                        android:text="Получить котировку" />
-                   
                 </LinearLayout>
 
                 <LinearLayout
@@ -213,12 +206,26 @@
                             android:entries="@array/year" />
                     </LinearLayout>
 
-                    <Button
-                        android:id="@+id/btnGetGraph"
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:onClick="onclick"
-                        android:text="Построить график" />
+                        android:orientation="horizontal" >
+
+                        <Button
+                            android:id="@+id/btnGetGraph"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:onClick="onclick"
+                            android:text="Построить график" />
+                        <Button 
+                            android:id="@+id/btnGetTable"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:onClick="onclick"
+                            android:text="Таблица котировок"/>
+                    </LinearLayout>
 
                     <LinearLayout
                         android:id="@+id/llGraph"

@@ -34,7 +34,8 @@ public class MainActivity extends Activity implements OnKeyListener,
 	final static int DIALOG_DATE = 1;
 	final static String LOG_TAG = "myLogs";
 
-	final static int ID_LOADER = 1;
+	final static int LOADER_DAY = 1;
+	final static int LOADER_MONTH = 2;
 
 	final String URL_DAY = "http://www.cbr.ru/scripts/XML_daily.asp?date_req=";
 	// final String URL_MONTH =
@@ -134,7 +135,7 @@ public class MainActivity extends Activity implements OnKeyListener,
 			String date = sdf.format(c.getTime());
 
 			btnDate.setText(date);
-			createRequest(URL_DAY + date);
+			createRequest(LOADER_DAY,URL_DAY + date);
 		}
 	};
 
@@ -143,20 +144,20 @@ public class MainActivity extends Activity implements OnKeyListener,
 		switch (v.getId()) {
 		case R.id.btnDate:
 			showDialog(DIALOG_DATE);
-			break;
-		case R.id.btnRequest:
-			// TODO: функция получения котировки на определённую дату
-			// TODO: функция отображения полученного курса
-			break;
+			break;		
 		case R.id.btnGetGraph:
 			Toast.makeText(this, "Строим график", Toast.LENGTH_SHORT).show();
 			// TODO:Функция получения массива котировок на выбранный месяц
 			// TODO: Метод класса MyGraphClass построения графика на основе
 			// полученного массива
-			// котировок (м.б. вызвана из предыдущей функции)
-
+			// котировок (м.б. вызвана из предыдущей функции)			
+			
 			Double[] test = { 12.5, 11.3, 10.4 };
 			createGraph(test);
+			break;
+		case R.id.btnGetTable:
+			Toast.makeText(this, "Получаем таблицу котировок", Toast.LENGTH_SHORT).show();
+			//createTable();
 			break;
 		default:
 			break;
@@ -222,16 +223,15 @@ public class MainActivity extends Activity implements OnKeyListener,
 	}
 
 	
-	protected void createRequest(String request) {
+	protected void createRequest(int loaderID, String request) {
 		Log.d(LOG_TAG, "CreateRequest: " + request);
 
 		Bundle args = new Bundle();
 		args.putString("REQUEST", request);
 
-		getLoaderManager().initLoader(ID_LOADER, args, this);
-		Loader<String> loader = getLoaderManager().getLoader(ID_LOADER);	
-		loader.forceLoad();
-		
+		getLoaderManager().initLoader(loaderID, args, this);
+		Loader<String> loader = getLoaderManager().getLoader(loaderID);	
+		loader.forceLoad();		
 	}
 	
 	
@@ -239,7 +239,7 @@ public class MainActivity extends Activity implements OnKeyListener,
 	@Override
 	public Loader<String> onCreateLoader(int id, Bundle args) {
 		Loader<String> loader = null;
-		if (id == ID_LOADER) {
+		if (id == LOADER_DAY || id == LOADER_MONTH) {
 			loader = new MyXMLAsyncLoader(this, args);
 			return loader;
 		}
@@ -249,14 +249,25 @@ public class MainActivity extends Activity implements OnKeyListener,
 	@Override
 	public void onLoadFinished(Loader<String> loader, String data) {
 		Toast.makeText(context, data, Toast.LENGTH_SHORT).show();
-		MyXMLParser mParser = new MyXMLParser(data);
-		multiplicator_EUR = mParser.getEUR();
-		multiplicator_USD = mParser.getUSD();
-				
-		tvUSDValue.setText(String.valueOf(multiplicator_USD));
-		tvEURValue.setText(String.valueOf(multiplicator_EUR));
-				
-		getLoaderManager().destroyLoader(ID_LOADER);
+		switch (loader.getId()) {
+		case LOADER_DAY:
+			MyXMLParser mParser = new MyXMLParser(data);
+			multiplicator_EUR = mParser.getEUR();
+			multiplicator_USD = mParser.getUSD();
+					
+			tvUSDValue.setText(String.valueOf(multiplicator_USD));
+			tvEURValue.setText(String.valueOf(multiplicator_EUR));
+			getLoaderManager().destroyLoader(LOADER_DAY);
+			break;
+		case LOADER_MONTH:
+			
+			getLoaderManager().destroyLoader(LOADER_MONTH);
+			break;
+		default:
+			break;
+		}
+						
+		
 	}
 
 	@Override
