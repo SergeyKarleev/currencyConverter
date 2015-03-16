@@ -1,8 +1,14 @@
-package ru.sergeykarleev.useuconverter;
+package ru.sergeykarleev.useuconverter.classes;
 
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+
+import ru.sergeykarleev.useuconverter.R;
+import ru.sergeykarleev.useuconverter.R.id;
+import ru.sergeykarleev.useuconverter.R.layout;
+import ru.sergeykarleev.useuconverter.R.string;
 
 import android.app.Activity;
 import android.app.DatePickerDialog;
@@ -20,6 +26,9 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.Spinner;
 import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -36,8 +45,7 @@ public class MainActivity extends Activity implements OnKeyListener,
 
 	final static int LOADER_DAY = 1;
 	final static int LOADER_MONTH = 2;
-
-	final String URL_DAY = "http://www.cbr.ru/scripts/XML_daily.asp?date_req=";
+	
 	// final String URL_MONTH =
 	// "http://www.cbr.ru/scripts/XML_dynamic.asp?date_req1=02/03/2001&date_req2=14/03/2001&VAL_NM_RQ=R01235";
 
@@ -51,12 +59,18 @@ public class MainActivity extends Activity implements OnKeyListener,
 	EditText etConvEUR;
 	EditText etConvRURusd;
 	EditText etConvRUReur;
+	
+	Spinner spMonth;
+	Spinner spYear;
+	RadioGroup rgValutes;
 
 	LinearLayout llGraph;
 
 	int mYear = 2015;
 	int mMonth = 0;
 	int mDay = 1;
+	
+	ArrayList<Double> quotesList = new ArrayList<>();
 
 	MyGraphClass mGraphObject;
 
@@ -84,6 +98,10 @@ public class MainActivity extends Activity implements OnKeyListener,
 		
 		tvUSDValue = (TextView) findViewById(R.id.tvUSDValue);
 		tvEURValue = (TextView) findViewById(R.id.tvEURValue);
+		
+		spMonth = (Spinner) findViewById(R.id.spMonth);
+		spYear = (Spinner) findViewById(R.id.spYear);
+		rgValutes = (RadioGroup) findViewById(R.id.rgValutes);
 		
 		
 		TabHost tabHost = (TabHost) findViewById(android.R.id.tabhost);
@@ -135,7 +153,7 @@ public class MainActivity extends Activity implements OnKeyListener,
 			String date = sdf.format(c.getTime());
 
 			btnDate.setText(date);
-			createRequest(LOADER_DAY,URL_DAY + date);
+			createRequest(LOADER_DAY,MyRequestHelper.getDayRequest(date));
 		}
 	};
 
@@ -149,14 +167,28 @@ public class MainActivity extends Activity implements OnKeyListener,
 			Toast.makeText(this, "Строим график", Toast.LENGTH_SHORT).show();
 			// TODO:Функция получения массива котировок на выбранный месяц
 			// TODO: Метод класса MyGraphClass построения графика на основе
-			// полученного массива
-			// котировок (м.б. вызвана из предыдущей функции)			
+			// полученного массива котировок (м.б. вызвана из предыдущей функции)
 			
-			Double[] test = { 12.5, 11.3, 10.4 };
-			createGraph(test);
+			if (quotesList.isEmpty()){
+				Toast.makeText(context, "Массив пуст", Toast.LENGTH_SHORT).show();
+				String month = spMonth.getSelectedItem().toString();
+				int year = Integer.parseInt(spYear.getSelectedItem().toString());				
+				
+				//Toast.makeText(context, tester, Toast.LENGTH_SHORT).show();
+				
+				//String request = MyRequestHelper.getMonthRequest(month, year); 
+				//createRequest(LOADER_MONTH,request); 
+						
+			}
+			
+			Double[] test = new Double[quotesList.size()];
+			for (int i = 0; i<test.length;i++) {
+				test[i] = quotesList.get(i);
+			}
+			//createGraph(test);			
 			break;
 		case R.id.btnGetTable:
-			Toast.makeText(this, "Получаем таблицу котировок", Toast.LENGTH_SHORT).show();
+			Toast.makeText(context, "Таблица котировок", Toast.LENGTH_SHORT).show();
 			//createTable();
 			break;
 		default:
@@ -225,7 +257,6 @@ public class MainActivity extends Activity implements OnKeyListener,
 	
 	protected void createRequest(int loaderID, String request) {
 		Log.d(LOG_TAG, "CreateRequest: " + request);
-
 		Bundle args = new Bundle();
 		args.putString("REQUEST", request);
 
@@ -252,8 +283,8 @@ public class MainActivity extends Activity implements OnKeyListener,
 		switch (loader.getId()) {
 		case LOADER_DAY:
 			MyDAYParser mParser = new MyDAYParser(data);
-			multiplicator_EUR = mParser.getValute(mParser.VALUTE_EUR);
-			multiplicator_USD = mParser.getValute(mParser.VALUTE_USD);
+			multiplicator_EUR = mParser.getValute(MyRequestHelper.VALUTE_EUR);
+			multiplicator_USD = mParser.getValute(MyRequestHelper.VALUTE_USD);
 					
 			tvUSDValue.setText(String.valueOf(multiplicator_USD));
 			tvEURValue.setText(String.valueOf(multiplicator_EUR));

@@ -1,4 +1,4 @@
-package ru.sergeykarleev.useuconverter;
+package ru.sergeykarleev.useuconverter.classes;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -6,6 +6,9 @@ import java.io.StringReader;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
+
+import ru.sergeykarleev.useuconverter.R;
+import ru.sergeykarleev.useuconverter.interfaces.XMLParser;
 
 import android.util.Log;
 
@@ -18,15 +21,7 @@ import android.util.Log;
 public class MyDAYParser implements XMLParser{
 
 	final static String LOG_TAG = "myLogs";
-
-	final static String TAG_NAME = "Valute";
-	final static String TAG_ATTR_NAME = "ID";
-
-	final static String TAG_USD_ID = "R01235";
-	final static String TAG_EUR_ID = "R01239";
-
-	final static String TAG_VALUE = "Value";
-
+	
 	double USD = 0.0;
 	double EUR = 0.0;
 
@@ -35,8 +30,7 @@ public class MyDAYParser implements XMLParser{
 
 		// TODO: реализовать проверку строки на техническую с ошибками или
 		// рабочую с данными
-		try {
-			Log.d(LOG_TAG, "Стартуем парсер");
+		try {			
 			startParsing(xmlFile);
 		} catch (Exception e) {
 			Log.d(LOG_TAG, e.toString());
@@ -105,10 +99,10 @@ public class MyDAYParser implements XMLParser{
 	@Override
 	public double getValute(int valute) {
 		switch (valute) {
-		case VALUTE_USD:
+		case MyRequestHelper.VALUTE_USD:
 			return USD;
 			
-		case VALUTE_EUR:
+		case MyRequestHelper.VALUTE_EUR:
 			return EUR;
 			
 		default:

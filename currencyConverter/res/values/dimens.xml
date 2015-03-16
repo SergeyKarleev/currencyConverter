@@ -6,7 +6,6 @@
 
     <!-- margins -->
     <dimen name="tabs_margin_top_bottom">10dp</dimen>
-    
-    <!-- Years -->
+      
     
 </resources>

@@ -1,4 +1,4 @@
-package ru.sergeykarleev.useuconverter;
+package ru.sergeykarleev.useuconverter.classes;
 
 import java.util.ArrayList;
 

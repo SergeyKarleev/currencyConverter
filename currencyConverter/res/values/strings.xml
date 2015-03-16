@@ -59,7 +59,7 @@
         <item >2014</item>
         <item >2015</item>        
     </string-array>
-    
+		    
     <!-- названия вкладок -->
     <string name="tab_1">Конвертер</string>
     <string name="tab_2">График</string>
