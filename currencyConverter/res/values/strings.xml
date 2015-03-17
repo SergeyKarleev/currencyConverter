@@ -12,8 +12,9 @@
     <string-array name="currentlies">
         <item>USD</item>
         <item>EUR</item>
-        <item>RUR</item>
+       
     </string-array>
+    
     
     <string-array name="month">
         <item >Январь</item>

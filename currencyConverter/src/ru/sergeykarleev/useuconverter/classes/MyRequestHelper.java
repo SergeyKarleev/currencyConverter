@@ -35,9 +35,22 @@ public abstract class MyRequestHelper {
 	 * Формирование запроса на месячные котировки по определенной валюте
 	 */
 	public static String getMonthRequest(int year, int monthOfYear,
-			String valuteID) {
+			String valute) {
 		String dateStart = getDate(year, monthOfYear, 1);
 		String dateEnd = getDateEnd(year, monthOfYear);
+		String valuteID = null;
+		
+		switch (valute) {
+		case "USD":
+			valuteID = VALUTE_USD_ID;
+			break;
+		case "EUR":
+			valuteID = VALUTE_EUR_ID;
+			break;
+		default:
+			valuteID = VALUTE_USD_ID;
+			break;
+		}
 
 		return MONTH_URL + "date_req1=" + dateStart + "&date_req2=" + dateEnd
 				+ "&VAL_NM_RQ=" + valuteID;

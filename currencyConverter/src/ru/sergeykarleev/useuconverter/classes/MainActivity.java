@@ -63,17 +63,17 @@ public class MainActivity extends Activity implements OnKeyListener,
 	
 	Spinner spMonth;
 	Spinner spYear;
-	RadioGroup rgValutes;
-
+	Spinner spValutes;
+	
 	LinearLayout llGraph;
 
 	int mYear = 2015;
 	int mMonth = 0;
 	int mDay = 1;
-	
-	ArrayList<Double> quotesList = new ArrayList<>();
-
+		
+	MyMonthQuotesObject mQuotesObject;
 	MyGraphClass mGraphObject;
+	
 
 	private static double multiplicator_USD = 1;
 	private static double multiplicator_EUR = 1;
@@ -100,13 +100,15 @@ public class MainActivity extends Activity implements OnKeyListener,
 		tvUSDValue = (TextView) findViewById(R.id.tvUSDValue);
 		tvEURValue = (TextView) findViewById(R.id.tvEURValue);
 		
-		spMonth = (Spinner) findViewById(R.id.spMonth);
+		spMonth = (Spinner) findViewById(R.id.spMonth);		
 		spYear = (Spinner) findViewById(R.id.spYear);
-		rgValutes = (RadioGroup) findViewById(R.id.rgValutes);
+		spValutes = (Spinner) findViewById(R.id.spValutes);
 		
 		
 		TabHost tabHost = (TabHost) findViewById(android.R.id.tabhost);
 		tabCreator(tabHost);
+		
+		mQuotesObject = MyMonthQuotesObject.getInstance();
 	}
 
 
@@ -157,6 +159,7 @@ public class MainActivity extends Activity implements OnKeyListener,
 
 	public void onclick(View v) {
 		// Toast.makeText(this, "onclick", Toast.LENGTH_SHORT).show();
+				
 		switch (v.getId()) {
 		case R.id.btnDate:
 			showDialog(DIALOG_DATE);
@@ -166,21 +169,28 @@ public class MainActivity extends Activity implements OnKeyListener,
 			
 			int year = Integer.valueOf(spYear.getSelectedItem().toString());
 			int monthOfYear = spMonth.getSelectedItemPosition();
+			String valute = spValutes.getSelectedItem().toString();
 						
+//			Toast.makeText(context, MyRequestHelper.getMonthRequest(year, monthOfYear, valute), Toast.LENGTH_LONG).show();
 			
-			Toast.makeText(context, MyRequestHelper.getMonthRequest(year, monthOfYear, MyRequestHelper.VALUTE_USD_ID), Toast.LENGTH_LONG).show();
+			if (mQuotesObject.isEmptyQuotes()){
+				Log.d(LOG_TAG, "Массив пуст. Формируем запросы");				
+				createRequest(LOADER_MONTH, MyRequestHelper.getMonthRequest(year, monthOfYear, valute));				
+			}
 			
-//			if (quotesList.isEmpty()){
-//				Toast.makeText(context, "Массив пуст", Toast.LENGTH_SHORT).show();
-//				String month = spMonth.getSelectedItem().toString();
-//				int year = Integer.parseInt(spYear.getSelectedItem().toString());				
-//				
-//				//Toast.makeText(context, tester, Toast.LENGTH_SHORT).show();
-//				
-//				//String request = MyRequestHelper.getMonthRequest(month, year); 
-//				//createRequest(LOADER_MONTH,request); 
-//						
-//			}
+			if (!mQuotesObject.isComparised(spYear.getSelectedItem().toString(), spMonth.getSelectedItem().toString(), spValutes.getSelectedItem().toString()))
+			{
+				Log.d(LOG_TAG, "Запрос месячных данных изменился.");
+				//TODO: формируем запрос, получаем ответ от сервера, парсим XML, записываем значения в mQuoteObject.setQuotesList(array)
+				//mQuotesObject.setQuotesList(quotesList);
+			}
+
+			if (!mQuotesObject.isEmptyQuotes()){
+				Log.d(LOG_TAG, "Массив заполнен. Строим график");
+				//TODO: рисуем график на основании значений в mQuotesObject.getQuotesList
+			}else{
+				
+			}
 //			
 //			Double[] test = new Double[quotesList.size()];
 //			for (int i = 0; i<test.length;i++) {
@@ -190,6 +200,7 @@ public class MainActivity extends Activity implements OnKeyListener,
 			break;
 		case R.id.btnGetTable:
 			Toast.makeText(context, "Таблица котировок", Toast.LENGTH_SHORT).show();
+						
 			//createTable();
 			break;
 		default:
@@ -283,15 +294,17 @@ public class MainActivity extends Activity implements OnKeyListener,
 		Toast.makeText(context, data, Toast.LENGTH_SHORT).show();
 		switch (loader.getId()) {
 		case LOADER_DAY:
-			MyDAYParser mParser = new MyDAYParser(data);
-			multiplicator_EUR = mParser.getValute(XMLParser.VALUTE_EUR);
-			multiplicator_USD = mParser.getValute(XMLParser.VALUTE_USD);
+			MyDAYParser mDayParser = new MyDAYParser(data);
+			multiplicator_EUR = mDayParser.getValute(XMLParser.VALUTE_EUR);
+			multiplicator_USD = mDayParser.getValute(XMLParser.VALUTE_USD);
 					
 			tvUSDValue.setText(String.valueOf(multiplicator_USD));
 			tvEURValue.setText(String.valueOf(multiplicator_EUR));
 			getLoaderManager().destroyLoader(LOADER_DAY);
 			break;
 		case LOADER_MONTH:			
+			MyMonthParser mMonthParser = new MyMonthParser(data);			
+			//mQuotesObject.setQuotesList(mMonthParser.getQuoteList());
 			getLoaderManager().destroyLoader(LOADER_MONTH);
 			break;
 		default:

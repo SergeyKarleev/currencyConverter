@@ -36,20 +36,18 @@ public final class R {
     }
     public static final class id {
         public static final int LinearLayout=0x7f090000;
-        public static final int action_settings=0x7f090014;
+        public static final int action_settings=0x7f090012;
         public static final int btnDate=0x7f090002;
-        public static final int btnGetGraph=0x7f090011;
-        public static final int btnGetTable=0x7f090012;
+        public static final int btnGetGraph=0x7f09000f;
+        public static final int btnGetTable=0x7f090010;
         public static final int etConvEUR=0x7f090009;
         public static final int etConvRUReur=0x7f09000a;
         public static final int etConvRURusd=0x7f090008;
         public static final int etConvUSD=0x7f090007;
-        public static final int llGraph=0x7f090013;
-        public static final int rbEUR=0x7f09000e;
-        public static final int rbUSD=0x7f09000d;
-        public static final int rgValutes=0x7f09000c;
-        public static final int spMonth=0x7f09000f;
-        public static final int spYear=0x7f090010;
+        public static final int llGraph=0x7f090011;
+        public static final int spMonth=0x7f09000d;
+        public static final int spValutes=0x7f09000c;
+        public static final int spYear=0x7f09000e;
         public static final int tab1=0x7f090001;
         public static final int tab2=0x7f09000b;
         public static final int tvEURLabel=0x7f090005;
