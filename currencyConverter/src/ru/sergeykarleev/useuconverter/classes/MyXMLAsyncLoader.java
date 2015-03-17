@@ -24,7 +24,7 @@ public class MyXMLAsyncLoader extends AsyncTaskLoader<String> {
 	public MyXMLAsyncLoader(Context context, Bundle args) {
 		super(context);
 		mRequest = args.getString("REQUEST");
-		Log.d(LOG_TAG, "Конструктор AsyncLoader загрузил запрос: "+mRequest);
+		//Log.d(LOG_TAG, "Конструктор AsyncLoader загрузил запрос: "+mRequest);
 	}
 
 	@Override

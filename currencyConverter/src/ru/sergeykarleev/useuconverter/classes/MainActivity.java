@@ -174,19 +174,19 @@ public class MainActivity extends Activity implements OnKeyListener,
 //			Toast.makeText(context, MyRequestHelper.getMonthRequest(year, monthOfYear, valute), Toast.LENGTH_LONG).show();
 			
 			if (mQuotesObject.isEmptyQuotes()){
-				Log.d(LOG_TAG, "Массив пуст. Формируем запросы");				
+//				Log.d(LOG_TAG, "Массив пуст. Формируем запросы");				
 				createRequest(LOADER_MONTH, MyRequestHelper.getMonthRequest(year, monthOfYear, valute));				
 			}
 			
 			if (!mQuotesObject.isComparised(spYear.getSelectedItem().toString(), spMonth.getSelectedItem().toString(), spValutes.getSelectedItem().toString()))
 			{
-				Log.d(LOG_TAG, "Запрос месячных данных изменился.");
+//				Log.d(LOG_TAG, "Запрос месячных данных изменился.");
 				//TODO: формируем запрос, получаем ответ от сервера, парсим XML, записываем значения в mQuoteObject.setQuotesList(array)
 				//mQuotesObject.setQuotesList(quotesList);
 			}
 
 			if (!mQuotesObject.isEmptyQuotes()){
-				Log.d(LOG_TAG, "Массив заполнен. Строим график");
+//				Log.d(LOG_TAG, "Массив заполнен. Строим график");
 				//TODO: рисуем график на основании значений в mQuotesObject.getQuotesList
 			}else{
 				
@@ -265,10 +265,14 @@ public class MainActivity extends Activity implements OnKeyListener,
 		mGraphObject = new MyGraphClass(this);
 		llGraph.addView(mGraphObject.createGraph(prices));
 	}
+	
+	protected void createTable(Double[] prices){
+		
+	}
 
 	
 	protected void createRequest(int loaderID, String request) {
-		Log.d(LOG_TAG, "CreateRequest: " + request);
+//		Log.d(LOG_TAG, "CreateRequest: " + request);
 		Bundle args = new Bundle();
 		args.putString("REQUEST", request);
 
@@ -302,7 +306,7 @@ public class MainActivity extends Activity implements OnKeyListener,
 			tvEURValue.setText(String.valueOf(multiplicator_EUR));
 			getLoaderManager().destroyLoader(LOADER_DAY);
 			break;
-		case LOADER_MONTH:			
+		case LOADER_MONTH:		
 			MyMonthParser mMonthParser = new MyMonthParser(data);			
 			//mQuotesObject.setQuotesList(mMonthParser.getQuoteList());
 			getLoaderManager().destroyLoader(LOADER_MONTH);

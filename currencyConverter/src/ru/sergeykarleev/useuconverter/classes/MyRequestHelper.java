@@ -25,9 +25,7 @@ public abstract class MyRequestHelper {
 	/**
 	 * Формирование запроса на дневные котировки по всем валютам
 	 */
-	public static String getDayRequest(int year, int monthOfYear, int dayOfMonth) {
-		Log.d(LOG_TAG, "year: " + year + "\nmonth: " + monthOfYear + "\nday: "
-				+ dayOfMonth);
+	public static String getDayRequest(int year, int monthOfYear, int dayOfMonth) {		
 		return DAY_URL + getDate(year, monthOfYear, dayOfMonth);
 	}
 
@@ -82,9 +80,7 @@ public abstract class MyRequestHelper {
 			lastDay = 30;
 			break;
 		}
-
-		Log.d(LOG_TAG, "year: " + year + "\nmonth: " + monthOfYear
-				+ "\nlastDay: " + lastDay);
+		
 		return getDate(year, monthOfYear, lastDay);
 	}
 
