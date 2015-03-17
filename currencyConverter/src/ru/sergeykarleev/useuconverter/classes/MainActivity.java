@@ -149,9 +149,9 @@ public class MainActivity extends Activity implements OnKeyListener,
 		public void onDateSet(DatePicker view, int year, int monthOfYear,
 				int dayOfMonth) {
 			
-			String date = MyRequestHelper.getDayRequest(year, monthOfYear, dayOfMonth);
-			btnDate.setText(date);
-			createRequest(LOADER_DAY, date);
+			String request = MyRequestHelper.getDayRequest(year, monthOfYear, dayOfMonth);
+			btnDate.setText(MyRequestHelper.getDate(year,monthOfYear,dayOfMonth));
+			createRequest(LOADER_DAY, request);
 		}
 	};
 
@@ -163,26 +163,29 @@ public class MainActivity extends Activity implements OnKeyListener,
 			break;		
 		case R.id.btnGetGraph:
 			Toast.makeText(this, "Строим график", Toast.LENGTH_SHORT).show();
-			// TODO:Функция получения массива котировок на выбранный месяц
-			// TODO: Метод класса MyGraphClass построения графика на основе
-			// полученного массива котировок (м.б. вызвана из предыдущей функции)
 			
-			if (quotesList.isEmpty()){
-				Toast.makeText(context, "Массив пуст", Toast.LENGTH_SHORT).show();
-				String month = spMonth.getSelectedItem().toString();
-				int year = Integer.parseInt(spYear.getSelectedItem().toString());				
-				
-				//Toast.makeText(context, tester, Toast.LENGTH_SHORT).show();
-				
-				//String request = MyRequestHelper.getMonthRequest(month, year); 
-				//createRequest(LOADER_MONTH,request); 
+			int year = Integer.valueOf(spYear.getSelectedItem().toString());
+			int monthOfYear = spMonth.getSelectedItemPosition();
 						
-			}
 			
-			Double[] test = new Double[quotesList.size()];
-			for (int i = 0; i<test.length;i++) {
-				test[i] = quotesList.get(i);
-			}
+			Toast.makeText(context, MyRequestHelper.getMonthRequest(year, monthOfYear, MyRequestHelper.VALUTE_USD_ID), Toast.LENGTH_LONG).show();
+			
+//			if (quotesList.isEmpty()){
+//				Toast.makeText(context, "Массив пуст", Toast.LENGTH_SHORT).show();
+//				String month = spMonth.getSelectedItem().toString();
+//				int year = Integer.parseInt(spYear.getSelectedItem().toString());				
+//				
+//				//Toast.makeText(context, tester, Toast.LENGTH_SHORT).show();
+//				
+//				//String request = MyRequestHelper.getMonthRequest(month, year); 
+//				//createRequest(LOADER_MONTH,request); 
+//						
+//			}
+//			
+//			Double[] test = new Double[quotesList.size()];
+//			for (int i = 0; i<test.length;i++) {
+//				test[i] = quotesList.get(i);
+//			}
 			//createGraph(test);			
 			break;
 		case R.id.btnGetTable:
