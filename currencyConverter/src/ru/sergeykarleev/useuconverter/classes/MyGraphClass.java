@@ -10,39 +10,46 @@ import com.jjoe64.graphview.series.DataPointInterface;
 import com.jjoe64.graphview.series.LineGraphSeries;
 import com.jjoe64.graphview.series.Series;
 
-
-/** ласс работает над построением графика на основе полученного массива значений (котировок)
+/**
+ *  ласс работает над построением графика на основе полученного массива значений
+ * (котировок)
+ * 
  * @author SergeyKarleev
- *
+ * 
  */
-public class MyGraphClass extends GraphView{
+public class MyGraphClass extends GraphView {
 
-	GraphView gView;	
-	
-	public MyGraphClass(Context context) {		
-		super(context);		
+	GraphView gView;
+
+	public MyGraphClass(Context context) {
+		super(context);
 		gView = new GraphView(context);
 	}
-	
-	/**ћетод возвращает готовый график дл€ отображени€ его в контейнере
-	 * @param prices массив значений цены закрыти€ дл€ каждого дн€ выбранного мес€ца
+
+	/**
+	 * ћетод возвращает готовый график дл€ отображени€ его в контейнере
+	 * 
+	 * @param prices
+	 *            массив значений цены закрыти€ дл€ каждого дн€ выбранного
+	 *            мес€ца
 	 * @return объект GraphView
 	 */
-	
-	public GraphView createGraph(Double[] prices){		
-		LineGraphSeries<DataPoint> gSeries = new LineGraphSeries<DataPoint>(generateData(prices));
-		gView.addSeries(gSeries);		
-		return gView;		
+
+	public GraphView createGraph(ArrayList<Double> quotes) {
+		LineGraphSeries<DataPoint> gSeries = new LineGraphSeries<DataPoint>(
+				generateData(quotes));
+		gView.addSeries(gSeries);
+		return gView;
 	}
-	
-	 private DataPoint[] generateData(Double[] prices) {
-	        int count = prices.length ;
-	        DataPoint[] values = new DataPoint[count];
-	        for (int x=0; x<count; x++) {	                 
-	            double y = prices[x];
-	            DataPoint v = new DataPoint(x+1, y);
-	            values[x] = v;
-	        }
-	        return values;
-	    }
+
+	private DataPoint[] generateData(ArrayList<Double> quotes) {
+		int count = quotes.size();
+		DataPoint[] values = new DataPoint[count];
+		for (int x = 0; x < count; x++) {
+			Double y = quotes.get(x);
+			DataPoint v = new DataPoint(x + 1, y);
+			values[x] = v;
+		}
+		return values;
+	}
 }

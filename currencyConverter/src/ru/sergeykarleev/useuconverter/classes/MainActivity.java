@@ -260,7 +260,7 @@ public class MainActivity extends Activity implements OnKeyListener,
 	 * @param prices
 	 *            массив котировок
 	 */
-	protected void createGraph(Double[] prices) {
+	protected void createGraph(ArrayList<Double> prices) {
 		llGraph.removeAllViews();
 		mGraphObject = new MyGraphClass(this);
 		llGraph.addView(mGraphObject.createGraph(prices));
@@ -272,7 +272,7 @@ public class MainActivity extends Activity implements OnKeyListener,
 
 	
 	protected void createRequest(int loaderID, String request) {
-//		Log.d(LOG_TAG, "CreateRequest: " + request);
+		Log.d(LOG_TAG, "CreateRequest: " + request);
 		Bundle args = new Bundle();
 		args.putString("REQUEST", request);
 
