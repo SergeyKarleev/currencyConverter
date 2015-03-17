@@ -99,12 +99,10 @@ public class MyDAYParser implements XMLParser{
 	@Override
 	public double getValute(int valute) {
 		switch (valute) {
-		case MyRequestHelper.VALUTE_USD:
+		case VALUTE_USD:
 			return USD;
-			
-		case MyRequestHelper.VALUTE_EUR:
-			return EUR;
-			
+		case VALUTE_EUR:
+			return EUR;			
 		default:
 			break;
 		}

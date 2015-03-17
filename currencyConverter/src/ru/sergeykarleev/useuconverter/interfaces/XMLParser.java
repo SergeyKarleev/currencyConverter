@@ -10,6 +10,9 @@ public interface XMLParser {
 
 	final static String TAG_NAME = "Valute";
 	final static String TAG_ATTR_NAME = "ID";
+	
+	final static int VALUTE_USD = 1;
+	final static int VALUTE_EUR = 2;
 
 	final static String TAG_USD_ID = "R01235";
 	final static String TAG_EUR_ID = "R01239";

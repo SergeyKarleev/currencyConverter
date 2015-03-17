@@ -9,6 +9,7 @@ import ru.sergeykarleev.useuconverter.R;
 import ru.sergeykarleev.useuconverter.R.id;
 import ru.sergeykarleev.useuconverter.R.layout;
 import ru.sergeykarleev.useuconverter.R.string;
+import ru.sergeykarleev.useuconverter.interfaces.XMLParser;
 
 import android.app.Activity;
 import android.app.DatePickerDialog;
@@ -147,13 +148,10 @@ public class MainActivity extends Activity implements OnKeyListener,
 		@Override
 		public void onDateSet(DatePicker view, int year, int monthOfYear,
 				int dayOfMonth) {
-			Calendar c = Calendar.getInstance();
-			c.set(year, monthOfYear, dayOfMonth);
-			SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-			String date = sdf.format(c.getTime());
-
+			
+			String date = MyRequestHelper.getDayRequest(year, monthOfYear, dayOfMonth);
 			btnDate.setText(date);
-			createRequest(LOADER_DAY,MyRequestHelper.getDayRequest(date));
+			createRequest(LOADER_DAY, date);
 		}
 	};
 
@@ -283,8 +281,8 @@ public class MainActivity extends Activity implements OnKeyListener,
 		switch (loader.getId()) {
 		case LOADER_DAY:
 			MyDAYParser mParser = new MyDAYParser(data);
-			multiplicator_EUR = mParser.getValute(MyRequestHelper.VALUTE_EUR);
-			multiplicator_USD = mParser.getValute(MyRequestHelper.VALUTE_USD);
+			multiplicator_EUR = mParser.getValute(XMLParser.VALUTE_EUR);
+			multiplicator_USD = mParser.getValute(XMLParser.VALUTE_USD);
 					
 			tvUSDValue.setText(String.valueOf(multiplicator_USD));
 			tvEURValue.setText(String.valueOf(multiplicator_EUR));
