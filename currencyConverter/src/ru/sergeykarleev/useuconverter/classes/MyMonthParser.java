@@ -3,32 +3,35 @@ package ru.sergeykarleev.useuconverter.classes;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
 
+import android.graphics.Path.FillType;
 import android.util.Log;
 
 import ru.sergeykarleev.useuconverter.interfaces.XMLParser;
 
 public class MyMonthParser implements XMLParser {
-		
-	Double[] USD = null;
-	Double[] EUR = null;
 
-	private final static String DATE = "Date";
+ 
 	private final static String TAG_VALUE = "Value";
 	private final static String TAG_VALCURSE = "ValCurs";
 	
-	private ArrayList<String> techArray;
-	private ArrayList<Double> quotes;
+	private static int lastDay;
+	private static Double[] quotes = new Double[31];
 	
-	public MyMonthParser(String xmlFile) {
+	//private ArrayList<String> techArray;	
+	//private ArrayList<Double> quotes;
+	
+	public MyMonthParser(String xmlFile, int lastDay) {
 		super();
 		try {
-			techArray = new ArrayList<String>();						
+			//techArray = new ArrayList<String>();			
+			this.lastDay = lastDay;
 			startParsing(xmlFile);
 			
 		} catch (XmlPullParserException e) {
@@ -49,20 +52,31 @@ public class MyMonthParser implements XMLParser {
 		XmlPullParser parser = factory.newPullParser();
 		parser.setInput(new StringReader(xml));
 				
-		String tagName = null;
-		
+		String tagName = null;		
+		int i = 0;
+				
 		//TODO: Парсим документ
 		while(parser.getEventType()!= XmlPullParser.END_DOCUMENT){
 			switch (parser.getEventType()) {
 			case XmlPullParser.START_TAG:				
 				tagName = parser.getName();
-				if (parser.getAttributeCount()>0 && !parser.getName().equals(TAG_VALCURSE)){		
-					techArray.add(parser.getAttributeValue(0));
+				if (parser.getAttributeCount()>0 && !parser.getName().equals(TAG_VALCURSE)){					
+					i = Integer.valueOf(parser.getAttributeValue(0).substring(0, 2))-1;					 
+					Log.d(LOG_TAG, "i = "+i);
+					//techArray.add(parser.getAttributeValue(0));
 				}					
 				break;			
 			case XmlPullParser.TEXT:
 				if (tagName.equals(TAG_VALUE)){
-					techArray.add(parser.getText());
+					Log.d(LOG_TAG, "Записываем в "+i+" значение "+parser.getText());
+					try{
+					quotes[i] = Double.parseDouble(parser.getText().replace(",", "."));					
+					}
+					catch(Exception e){
+						e.printStackTrace();
+						Log.d(LOG_TAG, e.toString());
+					}
+					//techArray.add(parser.getText());
 					tagName = "null";
 				}
 					
@@ -72,44 +86,39 @@ public class MyMonthParser implements XMLParser {
 			}			
 			parser.next();
 			
+		}
+				
+		fillindQuotes(quotes);
+		//parseQuotes(techArray);
+	}
+	
+	/**Дополняем пустые ячейки массива котировок предыдущим ненулевым значением 
+	 * @param quotes
+	 */
+	private void fillindQuotes(Double[] quotes) {
+		for (int i = 0; i<lastDay; i++) {
+			if (i>0 && quotes[i]==0.0){
+				quotes[i]=quotes[i-1];
+				int j=i+1;
+				Log.d(LOG_TAG, "День "+j+" значение: "+quotes[i]);
+			}			
 		}		
-		parseQuotes(techArray);
-	}	
+	}
+	
+	public Double[] getQuotesList(){
+		Double[] qt = new Double[lastDay];
+		Arrays.fill(qt, 0.0);
+		for (int i=0;i<lastDay;i++){
+			qt[i]=quotes[i];
+		}		
+		return qt;	
+	}
+
+	
 	
 	@Override
 	public double getValute(int valute) {
 		// TODO Auto-generated method stub
 		return 0;
 	}
-
-	private void parseQuotes(ArrayList<String> techArray){
-		
-		//TODO: Здесь мы должны перегнать все имеющиеся значения котировок в массив quote, заполнив дубликатами предыдущих дней пустые значения на текущий
-		/*
-		 * 1. Определяем количество дней в выбранном месяце lastDay
-		 * 2. Создаем массив Double[] days размером из п.1
-		 * 3. На каждый элемент массива days просматриваем, есть ли такой день в массиве techArray. Если да, то записываем следующее значение из techArray (это будет котировка)
-		 * если нет, то предыдущее значение из массива days.
-		 */
-		quotes = new ArrayList<Double>();
-		int arrSize = techArray.size();
-		String lastData = techArray.get(arrSize-2);
-		String lastDayStr = lastData.substring(0, 2);
-		int lastDay = Integer.valueOf(lastDayStr);
-		
-		Log.d(LOG_TAG, "TechArray: "+"\nсодержит значений = "+arrSize/2+
-				"\nколичество дней = "+lastDay);
-		for (int i = 0; i<techArray.size();i++) {
-			if (i%2!=0)
-				Log.d(LOG_TAG, techArray.get(i));
-		}
-		
-		
-		
-	}
-	
-	public ArrayList<String> getQuoteList() {
-		return techArray;
-	}
-
 }

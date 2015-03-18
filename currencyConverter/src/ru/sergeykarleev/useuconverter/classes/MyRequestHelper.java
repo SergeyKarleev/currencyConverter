@@ -49,7 +49,7 @@ public abstract class MyRequestHelper {
 			valuteID = VALUTE_USD_ID;
 			break;
 		}
-
+		
 		return MONTH_URL + "date_req1=" + dateStart + "&date_req2=" + dateEnd
 				+ "&VAL_NM_RQ=" + valuteID;
 	}

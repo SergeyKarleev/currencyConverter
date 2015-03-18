@@ -13,7 +13,7 @@ public class MyMonthQuotesObject {
 	
 	private MyMonthQuotesObject() {
 		super();		
-		quotesList  = new ArrayList<>();
+		quotesList = new ArrayList<Double>();
 	}
 
 
@@ -24,12 +24,14 @@ public class MyMonthQuotesObject {
 		
 	}
 	
-	public ArrayList<Double> getQuotesList() {
-		return quotesList;
+	public Double[] getQuotesList() {
+		return (Double[]) quotesList.toArray();
 	}
 	
-	public void setQuotesList(ArrayList<Double> quotesList) {
-		this.quotesList = quotesList;
+	public void setQuotesList(Double[] doubles) {
+		for (int i=0;i<doubles.length;i++) {
+			quotesList.add(doubles[i]);
+		}
 	}
 	
 	public void clearQuotesList(){
@@ -37,8 +39,7 @@ public class MyMonthQuotesObject {
 	}
 	
 	public boolean isEmptyQuotes(){		
-		return quotesList.isEmpty();
-		
+		return quotesList.isEmpty();		
 	}
 	
 	public boolean isComparised(String year, String month, String valute){
@@ -47,7 +48,6 @@ public class MyMonthQuotesObject {
 				this.month.equals(month) &
 				this.valute.equals(valute))
 			return true;
-		return false;
-		
+		return false;		
 	}
 }

@@ -306,9 +306,10 @@ public class MainActivity extends Activity implements OnKeyListener,
 			tvEURValue.setText(String.valueOf(multiplicator_EUR));
 			getLoaderManager().destroyLoader(LOADER_DAY);
 			break;
-		case LOADER_MONTH:		
-			MyMonthParser mMonthParser = new MyMonthParser(data);			
-			//mQuotesObject.setQuotesList(mMonthParser.getQuoteList());
+		case LOADER_MONTH:	
+			//TODO: ниже убрать 31 и поставить метод, возвращающий количество дней в месяце
+			MyMonthParser mMonthParser = new MyMonthParser(data,31);			
+			mQuotesObject.setQuotesList(mMonthParser.getQuotesList());
 			getLoaderManager().destroyLoader(LOADER_MONTH);
 			break;
 		default:
