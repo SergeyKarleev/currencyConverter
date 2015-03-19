@@ -170,27 +170,24 @@ public class MainActivity extends Activity implements OnKeyListener,
 			int year = Integer.valueOf(spYear.getSelectedItem().toString());
 			int monthOfYear = spMonth.getSelectedItemPosition();
 			String valute = spValutes.getSelectedItem().toString();
-						
-//			Toast.makeText(context, MyRequestHelper.getMonthRequest(year, monthOfYear, valute), Toast.LENGTH_LONG).show();
 			
-			if (mQuotesObject.isEmptyQuotes()){
-//				Log.d(LOG_TAG, "ћассив пуст. ‘ормируем запросы");				
+			if (mQuotesObject.isEmptyQuotes()){				
 				createRequest(LOADER_MONTH, MyRequestHelper.getMonthRequest(year, monthOfYear, valute));				
 			}
 			
-			if (!mQuotesObject.isComparised(spYear.getSelectedItem().toString(), spMonth.getSelectedItem().toString(), spValutes.getSelectedItem().toString()))
-			{
+//			if (!mQuotesObject.isComparised(spYear.getSelectedItem().toString(), spMonth.getSelectedItem().toString(), spValutes.getSelectedItem().toString()))
+//			{
 //				Log.d(LOG_TAG, "«апрос мес€чных данных изменилс€.");
-				//TODO: формируем запрос, получаем ответ от сервера, парсим XML, записываем значени€ в mQuoteObject.setQuotesList(array)
-				//mQuotesObject.setQuotesList(quotesList);
-			}
-
-			if (!mQuotesObject.isEmptyQuotes()){
+//				//TODO: формируем запрос, получаем ответ от сервера, парсим XML, записываем значени€ в mQuoteObject.setQuotesList(array)
+//				//mQuotesObject.setQuotesList(quotesList);
+//			}
+//
+//			if (!mQuotesObject.isEmptyQuotes()){
 //				Log.d(LOG_TAG, "ћассив заполнен. —троим график");
-				//TODO: рисуем график на основании значений в mQuotesObject.getQuotesList
-			}else{
-				
-			}
+//				//TODO: рисуем график на основании значений в mQuotesObject.getQuotesList
+//			}else{
+//				
+//			}
 //			
 //			Double[] test = new Double[quotesList.size()];
 //			for (int i = 0; i<test.length;i++) {
@@ -308,7 +305,7 @@ public class MainActivity extends Activity implements OnKeyListener,
 			break;
 		case LOADER_MONTH:	
 			//TODO: ниже убрать 31 и поставить метод, возвращающий количество дней в мес€це
-			MyMonthParser mMonthParser = new MyMonthParser(data,31);			
+			MyMonthParser mMonthParser = new MyMonthParser(data);			
 			mQuotesObject.setQuotesList(mMonthParser.getQuotesList());
 			getLoaderManager().destroyLoader(LOADER_MONTH);
 			break;
