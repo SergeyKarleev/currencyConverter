@@ -185,6 +185,7 @@ public class MainActivity extends Activity implements OnKeyListener,
 					.toString(), spMonth.getSelectedItem().toString(),
 					spValutes.getSelectedItem().toString())) {
 				Log.d(LOG_TAG, "Входящие данные изменились. Получаем новые значения");
+				mQuotesObject.clearQuotesList();
 				createRequest(LOADER_MONTH, MyRequestHelper.getMonthRequest(
 						year, monthOfYear, valute));
 			}else{

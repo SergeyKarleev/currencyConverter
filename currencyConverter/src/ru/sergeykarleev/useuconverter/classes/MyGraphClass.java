@@ -1,5 +1,6 @@
 package ru.sergeykarleev.useuconverter.classes;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
 
 import android.content.Context;
@@ -38,7 +39,11 @@ public class MyGraphClass extends GraphView {
 	public GraphView createGraph(Double[] doubles) {
 		LineGraphSeries<DataPoint> gSeries = new LineGraphSeries<DataPoint>(
 				generateData(doubles));
+		
+		NumberFormat nf = NumberFormat.getInstance();
+		nf.setMaximumFractionDigits(31);
 		gView.addSeries(gSeries);
+		gView.getGridLabelRenderer().setLabelFormatter(new DefaultLabelFormatter(nf, null));
 		return gView;
 	}
 
