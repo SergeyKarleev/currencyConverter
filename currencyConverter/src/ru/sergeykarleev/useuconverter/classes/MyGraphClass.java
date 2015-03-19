@@ -35,18 +35,18 @@ public class MyGraphClass extends GraphView {
 	 * @return объект GraphView
 	 */
 
-	public GraphView createGraph(ArrayList<Double> quotes) {
+	public GraphView createGraph(Double[] doubles) {
 		LineGraphSeries<DataPoint> gSeries = new LineGraphSeries<DataPoint>(
-				generateData(quotes));
+				generateData(doubles));
 		gView.addSeries(gSeries);
 		return gView;
 	}
 
-	private DataPoint[] generateData(ArrayList<Double> quotes) {
-		int count = quotes.size();
+	private DataPoint[] generateData(Double[] doubles) {
+		int count = doubles.length;
 		DataPoint[] values = new DataPoint[count];
 		for (int x = 0; x < count; x++) {
-			Double y = quotes.get(x);
+			Double y = doubles[x];
 			DataPoint v = new DataPoint(x + 1, y);
 			values[x] = v;
 		}

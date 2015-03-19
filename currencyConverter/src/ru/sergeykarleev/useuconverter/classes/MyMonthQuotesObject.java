@@ -24,8 +24,8 @@ public class MyMonthQuotesObject {
 		
 	}
 	
-	public Double[] getQuotesList() {
-		return (Double[]) quotesList.toArray();
+	public Double[] getQuotesList() {		
+		return quotesList.toArray(new Double[quotesList.size()]);
 	}
 	
 	public void setQuotesList(Double[] doubles) {
@@ -38,8 +38,15 @@ public class MyMonthQuotesObject {
 		this.quotesList.clear();
 	}
 	
-	public boolean isEmptyQuotes(){		
-		return quotesList.isEmpty();		
+	public boolean isEmptyQuotes(){
+		try{
+			for (int i=0; i<quotesList.size();i++)
+				if (quotesList.get(i)!=0.0)
+					return false;	
+		}catch(Exception e){
+			e.printStackTrace();
+		}		
+		return true;
 	}
 	
 	public boolean isComparised(String year, String month, String valute){

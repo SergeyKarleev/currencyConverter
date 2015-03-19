@@ -67,6 +67,7 @@ public class MyMonthParser implements XMLParser {
 
 		String tagName = null;
 		int i = 0;
+		Arrays.fill(quotes, 0.0);
 
 		// TODO: Парсим документ
 		while (parser.getEventType() != XmlPullParser.END_DOCUMENT) {
@@ -84,7 +85,7 @@ public class MyMonthParser implements XMLParser {
 			case XmlPullParser.TEXT:
 				if (tagName.equals(TAG_VALUE)) {
 					Log.d(LOG_TAG,
-							"Записываем в " + i + " значение "
+							"Записываем в день " + (i+1) + " значение "
 									+ parser.getText());
 					try {
 						quotes[i] = Double.parseDouble(parser.getText()
@@ -104,7 +105,7 @@ public class MyMonthParser implements XMLParser {
 			parser.next();
 
 		}
-
+		
 		fillindQuotes(quotes);
 		// parseQuotes(techArray);
 	}
@@ -116,17 +117,22 @@ public class MyMonthParser implements XMLParser {
 	 */
 	private void fillindQuotes(Double[] quotes) {
 		for (int i = 0; i < lastDay; i++) {
-			if (i > 0 && quotes[i] == 0.0) {
+			if (i > 0 && quotes[i]==0.0) {
 				quotes[i] = quotes[i - 1];
 				int j = i + 1;
 				Log.d(LOG_TAG, "День " + j + " значение: " + quotes[i]);
+			}else{
+				Log.d(LOG_TAG, "День "+(i+1)+" значение: "+quotes[i]);
 			}
+		
+			
 		}
+		Log.d(LOG_TAG, "Массив успешно заполнен");
 	}
 
 	public Double[] getQuotesList() {
 		Double[] qt = new Double[lastDay];
-		Arrays.fill(qt, 0.0);
+		//Arrays.fill(qt, 0.0);
 		for (int i = 0; i < lastDay; i++) {
 			qt[i] = quotes[i];
 		}

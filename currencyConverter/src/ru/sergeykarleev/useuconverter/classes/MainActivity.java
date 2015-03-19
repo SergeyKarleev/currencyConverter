@@ -47,6 +47,10 @@ public class MainActivity extends Activity implements OnKeyListener,
 	final static int LOADER_DAY = 1;
 	final static int LOADER_MONTH = 2;
 	
+	final static int INFOVIEW_NONE = 0;
+	final static int INFOVIEW_GRAPH = 1;
+	final static int INFOVIEW_TABLE = 2;
+
 	// final String URL_MONTH =
 	// "http://www.cbr.ru/scripts/XML_dynamic.asp?date_req1=02/03/2001&date_req2=14/03/2001&VAL_NM_RQ=R01235";
 
@@ -60,20 +64,21 @@ public class MainActivity extends Activity implements OnKeyListener,
 	EditText etConvEUR;
 	EditText etConvRURusd;
 	EditText etConvRUReur;
-	
+
 	Spinner spMonth;
 	Spinner spYear;
 	Spinner spValutes;
-	
+
 	LinearLayout llGraph;
+	
+	int infoView = INFOVIEW_NONE;
 
 	int mYear = 2015;
 	int mMonth = 0;
 	int mDay = 1;
-		
+
 	MyMonthQuotesObject mQuotesObject;
 	MyGraphClass mGraphObject;
-	
 
 	private static double multiplicator_USD = 1;
 	private static double multiplicator_EUR = 1;
@@ -96,21 +101,19 @@ public class MainActivity extends Activity implements OnKeyListener,
 		etConvRURusd.setOnKeyListener(this);
 		etConvRUReur = (EditText) findViewById(R.id.etConvRUReur);
 		etConvRUReur.setOnKeyListener(this);
-		
+
 		tvUSDValue = (TextView) findViewById(R.id.tvUSDValue);
 		tvEURValue = (TextView) findViewById(R.id.tvEURValue);
-		
-		spMonth = (Spinner) findViewById(R.id.spMonth);		
+
+		spMonth = (Spinner) findViewById(R.id.spMonth);
 		spYear = (Spinner) findViewById(R.id.spYear);
 		spValutes = (Spinner) findViewById(R.id.spValutes);
-		
-		
+
 		TabHost tabHost = (TabHost) findViewById(android.R.id.tabhost);
 		tabCreator(tabHost);
-		
+
 		mQuotesObject = MyMonthQuotesObject.getInstance();
 	}
-
 
 	private void tabCreator(TabHost tabHost) {
 		tabHost.setup();
@@ -150,55 +153,53 @@ public class MainActivity extends Activity implements OnKeyListener,
 		@Override
 		public void onDateSet(DatePicker view, int year, int monthOfYear,
 				int dayOfMonth) {
-			
-			String request = MyRequestHelper.getDayRequest(year, monthOfYear, dayOfMonth);
-			btnDate.setText(MyRequestHelper.getDate(year,monthOfYear,dayOfMonth));
+
+			String request = MyRequestHelper.getDayRequest(year, monthOfYear,
+					dayOfMonth);
+			btnDate.setText(MyRequestHelper.getDate(year, monthOfYear,
+					dayOfMonth));
 			createRequest(LOADER_DAY, request);
 		}
 	};
 
 	public void onclick(View v) {
 		// Toast.makeText(this, "onclick", Toast.LENGTH_SHORT).show();
-				
+
 		switch (v.getId()) {
 		case R.id.btnDate:
 			showDialog(DIALOG_DATE);
-			break;		
+			break;
 		case R.id.btnGetGraph:
 			Toast.makeText(this, "Строим график", Toast.LENGTH_SHORT).show();
-			
+
 			int year = Integer.valueOf(spYear.getSelectedItem().toString());
 			int monthOfYear = spMonth.getSelectedItemPosition();
 			String valute = spValutes.getSelectedItem().toString();
+
+			if (mQuotesObject.isEmptyQuotes()) {
+				createRequest(LOADER_MONTH, MyRequestHelper.getMonthRequest(
+						year, monthOfYear, valute));
+				Log.d(LOG_TAG, "Значений нет. Получаем значения");
+
+			} else if (!mQuotesObject.isComparised(spYear.getSelectedItem()
+					.toString(), spMonth.getSelectedItem().toString(),
+					spValutes.getSelectedItem().toString())) {
+				Log.d(LOG_TAG, "Входящие данные изменились. Получаем новые значения");
+				createRequest(LOADER_MONTH, MyRequestHelper.getMonthRequest(
+						year, monthOfYear, valute));
+			}else{
+				Log.d(LOG_TAG, "Строим график по существующим значениям\nвсего значений: "+mQuotesObject.getQuotesList().length);
+				createGraph(mQuotesObject.getQuotesList());
+			}			
 			
-			if (mQuotesObject.isEmptyQuotes()){				
-				createRequest(LOADER_MONTH, MyRequestHelper.getMonthRequest(year, monthOfYear, valute));				
-			}
-			
-//			if (!mQuotesObject.isComparised(spYear.getSelectedItem().toString(), spMonth.getSelectedItem().toString(), spValutes.getSelectedItem().toString()))
-//			{
-//				Log.d(LOG_TAG, "Запрос месячных данных изменился.");
-//				//TODO: формируем запрос, получаем ответ от сервера, парсим XML, записываем значения в mQuoteObject.setQuotesList(array)
-//				//mQuotesObject.setQuotesList(quotesList);
-//			}
-//
-//			if (!mQuotesObject.isEmptyQuotes()){
-//				Log.d(LOG_TAG, "Массив заполнен. Строим график");
-//				//TODO: рисуем график на основании значений в mQuotesObject.getQuotesList
-//			}else{
-//				
-//			}
-//			
-//			Double[] test = new Double[quotesList.size()];
-//			for (int i = 0; i<test.length;i++) {
-//				test[i] = quotesList.get(i);
-//			}
-			//createGraph(test);			
+			infoView = INFOVIEW_GRAPH;
 			break;
 		case R.id.btnGetTable:
-			Toast.makeText(context, "Таблица котировок", Toast.LENGTH_SHORT).show();
-						
-			//createTable();
+			Toast.makeText(context, "Таблица котировок", Toast.LENGTH_SHORT)
+					.show();
+
+			// createTable();
+			infoView = INFOVIEW_TABLE;
 			break;
 		default:
 			break;
@@ -218,24 +219,24 @@ public class MainActivity extends Activity implements OnKeyListener,
 
 		switch (v.getId()) {
 		case R.id.etConvUSD:
-			etConvRURusd.setText(roundUp(Double.valueOf(etConvUSD
-					.getText().toString()) * multiplicator_USD));
+			etConvRURusd.setText(roundUp(Double.valueOf(etConvUSD.getText()
+					.toString()) * multiplicator_USD));
 			break;
 		case R.id.etConvEUR:
-			etConvRUReur.setText(roundUp(Double.valueOf(etConvEUR
-					.getText().toString()) * multiplicator_EUR));
+			etConvRUReur.setText(roundUp(Double.valueOf(etConvEUR.getText()
+					.toString()) * multiplicator_EUR));
 			break;
 		case R.id.etConvRURusd:
 			if (multiplicator_USD == 0)
 				break;
-			etConvUSD.setText(roundUp(Double.valueOf(etConvRURusd
-					.getText().toString()) / multiplicator_USD * 1.0));
+			etConvUSD.setText(roundUp(Double.valueOf(etConvRURusd.getText()
+					.toString()) / multiplicator_USD * 1.0));
 			break;
 		case R.id.etConvRUReur:
 			if (multiplicator_EUR == 0)
 				break;
-			etConvEUR.setText(roundUp(Double.valueOf(etConvRUReur
-					.getText().toString()) / multiplicator_EUR * 1.0));
+			etConvEUR.setText(roundUp(Double.valueOf(etConvRUReur.getText()
+					.toString()) / multiplicator_EUR * 1.0));
 			break;
 		default:
 			break;
@@ -243,42 +244,41 @@ public class MainActivity extends Activity implements OnKeyListener,
 		return false;
 	}
 
-	
-	/**Функция округления. Округляем валюту после конвертации до 4 знака после запятой. 
+	/**
+	 * Функция округления. Округляем валюту после конвертации до 4 знака после
+	 * запятой.
 	 */
-	public String roundUp(double value){
-		BigDecimal val = new BigDecimal(""+value).setScale(4, BigDecimal.ROUND_HALF_UP);		
-	    return val.toString(); 
+	public String roundUp(double value) {
+		BigDecimal val = new BigDecimal("" + value).setScale(4,
+				BigDecimal.ROUND_HALF_UP);
+		return val.toString();
 	}
-	
+
 	/**
 	 * Метод отображения графика во второй вкладке в контейнере LinearLayout
 	 * 
-	 * @param prices
+	 * @param doubles
 	 *            массив котировок
 	 */
-	protected void createGraph(ArrayList<Double> prices) {
+	protected void createGraph(Double[] doubles) {
 		llGraph.removeAllViews();
 		mGraphObject = new MyGraphClass(this);
-		llGraph.addView(mGraphObject.createGraph(prices));
-	}
-	
-	protected void createTable(Double[] prices){
-		
+		llGraph.addView(mGraphObject.createGraph(doubles));
 	}
 
-	
+	protected void createTable(Double[] prices) {
+
+	}
+
 	protected void createRequest(int loaderID, String request) {
 		Log.d(LOG_TAG, "CreateRequest: " + request);
 		Bundle args = new Bundle();
 		args.putString("REQUEST", request);
 
 		getLoaderManager().initLoader(loaderID, args, this);
-		Loader<String> loader = getLoaderManager().getLoader(loaderID);	
-		loader.forceLoad();		
+		Loader<String> loader = getLoaderManager().getLoader(loaderID);
+		loader.forceLoad();
 	}
-	
-	
 
 	@Override
 	public Loader<String> onCreateLoader(int id, Bundle args) {
@@ -298,22 +298,34 @@ public class MainActivity extends Activity implements OnKeyListener,
 			MyDAYParser mDayParser = new MyDAYParser(data);
 			multiplicator_EUR = mDayParser.getValute(XMLParser.VALUTE_EUR);
 			multiplicator_USD = mDayParser.getValute(XMLParser.VALUTE_USD);
-					
+
 			tvUSDValue.setText(String.valueOf(multiplicator_USD));
 			tvEURValue.setText(String.valueOf(multiplicator_EUR));
 			getLoaderManager().destroyLoader(LOADER_DAY);
 			break;
-		case LOADER_MONTH:	
-			//TODO: ниже убрать 31 и поставить метод, возвращающий количество дней в месяце
-			MyMonthParser mMonthParser = new MyMonthParser(data);			
+		case LOADER_MONTH:
+			// TODO: ниже убрать 31 и поставить метод, возвращающий количество
+			// дней в месяце
+			MyMonthParser mMonthParser = new MyMonthParser(data);
 			mQuotesObject.setQuotesList(mMonthParser.getQuotesList());
 			getLoaderManager().destroyLoader(LOADER_MONTH);
+			
+			switch (infoView) {
+			case INFOVIEW_GRAPH:
+				createGraph(mQuotesObject.getQuotesList());				
+				break;
+			case INFOVIEW_TABLE:
+				createTable(mQuotesObject.getQuotesList());
+				break;
+			default:
+				break;
+			}			
+			infoView = INFOVIEW_NONE;
 			break;
 		default:
 			break;
 		}
-						
-		
+
 	}
 
 	@Override
