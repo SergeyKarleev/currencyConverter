@@ -358,7 +358,7 @@ public class MainActivity extends Activity implements OnKeyListener,
 
 	@Override
 	public void onLoadFinished(Loader<String> loader, String data) {
-		Toast.makeText(context, data, Toast.LENGTH_SHORT).show();
+		//Toast.makeText(context, data, Toast.LENGTH_SHORT).show();
 		switch (loader.getId()) {
 		case LOADER_DAY:
 			MyDAYParser mDayParser = new MyDAYParser(data);
