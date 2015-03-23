@@ -1,16 +1,9 @@
 package ru.sergeykarleev.useuconverter.classes;
 
 import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
 
 import ru.sergeykarleev.useuconverter.R;
-import ru.sergeykarleev.useuconverter.R.id;
-import ru.sergeykarleev.useuconverter.R.layout;
-import ru.sergeykarleev.useuconverter.R.string;
 import ru.sergeykarleev.useuconverter.interfaces.XMLParser;
-
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.DatePickerDialog.OnDateSetListener;
@@ -20,15 +13,17 @@ import android.content.Context;
 import android.content.Loader;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnKeyListener;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
+import android.widget.LinearLayout.LayoutParams;
+import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TabHost;
 import android.widget.TextView;
@@ -69,7 +64,8 @@ public class MainActivity extends Activity implements OnKeyListener,
 	Spinner spYear;
 	Spinner spValutes;
 
-	LinearLayout llGraph;
+	LinearLayout llContainer;
+	ListView lView;
 	
 	int infoView = INFOVIEW_NONE;
 
@@ -77,8 +73,9 @@ public class MainActivity extends Activity implements OnKeyListener,
 	int mMonth = 0;
 	int mDay = 1;
 
-	MyMonthQuotesObject mQuotesObject;
+	static MyMonthQuotesObject mQuotesObject;
 	MyGraphClass mGraphObject;
+	 
 
 	private static double multiplicator_USD = 1;
 	private static double multiplicator_EUR = 1;
@@ -90,7 +87,7 @@ public class MainActivity extends Activity implements OnKeyListener,
 
 		btnDate = (Button) findViewById(R.id.btnDate);
 
-		llGraph = (LinearLayout) findViewById(R.id.llGraph);
+		llContainer = (LinearLayout) findViewById(R.id.llContainer);
 
 		etConvUSD = (EditText) findViewById(R.id.etConvUSD);
 		etConvUSD.setOnKeyListener(this);
@@ -164,7 +161,10 @@ public class MainActivity extends Activity implements OnKeyListener,
 
 	public void onclick(View v) {
 		// Toast.makeText(this, "onclick", Toast.LENGTH_SHORT).show();
-
+		int year;
+		int monthOfYear;
+		String valute;
+		
 		switch (v.getId()) {
 		case R.id.btnDate:
 			showDialog(DIALOG_DATE);
@@ -172,9 +172,9 @@ public class MainActivity extends Activity implements OnKeyListener,
 		case R.id.btnGetGraph:
 			Toast.makeText(this, "Строим график", Toast.LENGTH_SHORT).show();
 
-			int year = Integer.valueOf(spYear.getSelectedItem().toString());
-			int monthOfYear = spMonth.getSelectedItemPosition();
-			String valute = spValutes.getSelectedItem().toString();
+			year = Integer.valueOf(spYear.getSelectedItem().toString());
+			monthOfYear = spMonth.getSelectedItemPosition();
+			valute = spValutes.getSelectedItem().toString();
 
 			if (mQuotesObject.isEmptyQuotes()) {
 				createRequest(LOADER_MONTH, MyRequestHelper.getMonthRequest(
@@ -190,17 +190,41 @@ public class MainActivity extends Activity implements OnKeyListener,
 						year, monthOfYear, valute));
 			}else{
 				Log.d(LOG_TAG, "Строим график по существующим значениям\nвсего значений: "+mQuotesObject.getQuotesList().length);
-				createGraph(mQuotesObject.getQuotesList());
+				createGraph(mQuotesObject);
 			}			
 			
 			infoView = INFOVIEW_GRAPH;
 			break;
 		case R.id.btnGetTable:
-			Toast.makeText(context, "Таблица котировок", Toast.LENGTH_SHORT)
-					.show();
+			
+			year = Integer.valueOf(spYear.getSelectedItem().toString());
+			monthOfYear = spMonth.getSelectedItemPosition();
+			valute = spValutes.getSelectedItem().toString();
 
-			// createTable();
-			infoView = INFOVIEW_TABLE;
+			if (mQuotesObject.isEmptyQuotes()) {
+				mQuotesObject.setData(spYear.getSelectedItem().toString(),
+						spMonth.getSelectedItem().toString(), 
+						spValutes.getSelectedItem().toString());
+				createRequest(LOADER_MONTH, MyRequestHelper.getMonthRequest(
+						year, monthOfYear, valute));
+				Log.d(LOG_TAG, "Значений нет. Получаем значения");
+
+			} else if (!mQuotesObject.isComparised(spYear.getSelectedItem()
+					.toString(), spMonth.getSelectedItem().toString(),
+					spValutes.getSelectedItem().toString())) {
+				Log.d(LOG_TAG, "Входящие данные изменились. Получаем новые значения");
+				mQuotesObject.clearQuotesList();
+				mQuotesObject.setData(spYear.getSelectedItem().toString(),
+						spMonth.getSelectedItem().toString(), 
+						spValutes.getSelectedItem().toString());
+				createRequest(LOADER_MONTH, MyRequestHelper.getMonthRequest(
+						year, monthOfYear, valute));
+			}else{
+				Log.d(LOG_TAG, "Строим график по существующим значениям\nвсего значений: "+mQuotesObject.getQuotesList().length);
+				createTable(mQuotesObject);
+			}			
+			
+			infoView = INFOVIEW_TABLE;			
 			break;
 		default:
 			break;
@@ -261,14 +285,37 @@ public class MainActivity extends Activity implements OnKeyListener,
 	 * @param doubles
 	 *            массив котировок
 	 */
-	protected void createGraph(Double[] doubles) {
-		llGraph.removeAllViews();
+	protected void createGraph(MyMonthQuotesObject mQList) {
+		Double[] doubles = mQList.getQuotesList();
+		llContainer.removeAllViews();
 		mGraphObject = new MyGraphClass(this);
-		llGraph.addView(mGraphObject.createGraph(doubles));
+		llContainer.addView(mGraphObject.createGraph(doubles));
 	}
 
-	protected void createTable(Double[] prices) {
-
+	protected void createTable(MyMonthQuotesObject mQList) {
+		llContainer.removeAllViews();
+		
+		String[] listItems = {"Нет котировок по данному запросу"}; 
+		try {
+			listItems = mQList.getQuoteListForTable();	
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		
+		LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+		TextView tvHeader = new TextView(context);
+		tvHeader.setText(mQuotesObject.getMonthAndYear());
+		
+		tvHeader.setLayoutParams(params);
+		tvHeader.setGravity(Gravity.CENTER_HORIZONTAL);		
+		
+		
+		lView = new ListView(context);
+		ArrayAdapter<String> adapter = new ArrayAdapter<>(context, android.R.layout.simple_list_item_1, listItems);
+		lView.setAdapter(adapter);
+		lView.setLayoutParams(params);
+		llContainer.addView(tvHeader);
+		llContainer.addView(lView);
 	}
 
 	protected void createRequest(int loaderID, String request) {
@@ -313,10 +360,10 @@ public class MainActivity extends Activity implements OnKeyListener,
 			
 			switch (infoView) {
 			case INFOVIEW_GRAPH:
-				createGraph(mQuotesObject.getQuotesList());				
+				createGraph(mQuotesObject);
 				break;
 			case INFOVIEW_TABLE:
-				createTable(mQuotesObject.getQuotesList());
+				createTable(mQuotesObject);
 				break;
 			default:
 				break;

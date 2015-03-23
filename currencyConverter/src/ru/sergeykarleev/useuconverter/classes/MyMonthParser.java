@@ -10,10 +10,11 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
 
+import ru.sergeykarleev.useuconverter.interfaces.XMLParser;
+
 import android.graphics.Path.FillType;
 import android.util.Log;
 
-import ru.sergeykarleev.useuconverter.interfaces.XMLParser;
 
 public class MyMonthParser implements XMLParser {
 
@@ -78,15 +79,15 @@ public class MyMonthParser implements XMLParser {
 						&& !parser.getName().equals(TAG_VALCURSE)) {
 					i = Integer.valueOf(parser.getAttributeValue(0).substring(
 							0, 2)) - 1;
-					Log.d(LOG_TAG, "i = " + i);
+					//Log.d(LOG_TAG, "i = " + i);
 					// techArray.add(parser.getAttributeValue(0));
 				}
 				break;
 			case XmlPullParser.TEXT:
 				if (tagName.equals(TAG_VALUE)) {
-					Log.d(LOG_TAG,
-							"Записываем в день " + (i+1) + " значение "
-									+ parser.getText());
+//					Log.d(LOG_TAG,
+//							"Записываем в день " + (i+1) + " значение "
+//									+ parser.getText());
 					try {
 						quotes[i] = Double.parseDouble(parser.getText()
 								.replace(",", "."));
@@ -120,9 +121,9 @@ public class MyMonthParser implements XMLParser {
 			if (i > 0 && quotes[i]==0.0) {
 				quotes[i] = quotes[i - 1];
 				int j = i + 1;
-				Log.d(LOG_TAG, "День " + j + " значение: " + quotes[i]);
+//				Log.d(LOG_TAG, "День " + j + " значение: " + quotes[i]);
 			}else{
-				Log.d(LOG_TAG, "День "+(i+1)+" значение: "+quotes[i]);
+//				Log.d(LOG_TAG, "День "+(i+1)+" значение: "+quotes[i]);
 			}
 		
 			

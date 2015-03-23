@@ -2,11 +2,15 @@ package ru.sergeykarleev.useuconverter.classes;
 
 import java.util.ArrayList;
 
+import android.util.Log;
+
 public class MyMonthQuotesObject {
+	final static String LOG_TAG = "myLogs";
+	
 	private ArrayList<Double> quotesList;
-	private String month = "null";
-	private String year = "null";
-	private String valute = "null";
+	private static String month = "null";
+	private static String year = "null";
+	private static String valute = "null";
 	
 	private static MyMonthQuotesObject instance = null;
 		
@@ -57,4 +61,30 @@ public class MyMonthQuotesObject {
 			return true;
 		return false;		
 	}
+	
+	public void setData(String year, String month, String valute){
+		this.year = year;
+		this.month = month;
+		this.valute = valute;
+	}
+
+	public String getMonthAndYear(){
+		return "Котировки на "+month+" "+year;
+	}
+
+	public String[] getQuoteListForTable(){
+		String[] qList = new String[quotesList.size()];
+		for (int i=0;i<quotesList.size();i++){
+			qList[i] = "День "+(i+1)+": "+quotesList.get(i)+" rub";
+		}
+		
+		Log.d(LOG_TAG, "Таблица будет состоять из:");
+		for (String string : qList) {
+			Log.d(LOG_TAG,string);
+		}
+		
+		return qList;	
+	}
+	
+	
 }

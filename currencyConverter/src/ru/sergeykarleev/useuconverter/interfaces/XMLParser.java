@@ -3,7 +3,8 @@ package ru.sergeykarleev.useuconverter.interfaces;
 import java.io.IOException;
 
 import org.xmlpull.v1.XmlPullParserException;
-import org.xmlpull.v1.XmlPullParserFactory;
+
+import ru.sergeykarleev.useuconverter.R.string;
 
 public interface XMLParser {
 	final static String LOG_TAG = "myLogs";
@@ -20,6 +21,5 @@ public interface XMLParser {
 	final static String TAG_VALUE = "Value";
 
 	void startParsing(String xml) throws XmlPullParserException, IOException;
-
 	public double getValute(int valute);
 }
