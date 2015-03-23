@@ -33,6 +33,7 @@ public class MyMonthQuotesObject {
 	}
 	
 	public void setQuotesList(Double[] doubles) {
+		quotesList.clear();
 		for (int i=0;i<doubles.length;i++) {
 			quotesList.add(doubles[i]);
 		}
@@ -74,6 +75,7 @@ public class MyMonthQuotesObject {
 
 	public String[] getQuoteListForTable(){
 		String[] qList = new String[quotesList.size()];
+		Log.d(LOG_TAG, "Длина списка "+quotesList.size());
 		for (int i=0;i<quotesList.size();i++){
 			qList[i] = "День "+(i+1)+": "+quotesList.get(i)+" rub";
 		}
