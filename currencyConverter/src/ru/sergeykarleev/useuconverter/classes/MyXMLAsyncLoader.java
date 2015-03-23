@@ -40,10 +40,12 @@ public class MyXMLAsyncLoader extends AsyncTaskLoader<String> {
 			url = new URL(mRequest);
 			inputStream = url.openStream();			
 			return new Scanner(inputStream).useDelimiter("\\A").next();
-		}catch (java.util.NoSuchElementException e) {			
+		}catch (java.util.NoSuchElementException e) {
+			Log.d(LOG_TAG, e.toString());			
 			return e.toString();
 		}catch (IOException e1) {
-			Toast.makeText(context, e1.toString(), Toast.LENGTH_SHORT).show();
+			Log.d(LOG_TAG, e1.getMessage());			
+			
 			return e1.toString();
 		} 
 		

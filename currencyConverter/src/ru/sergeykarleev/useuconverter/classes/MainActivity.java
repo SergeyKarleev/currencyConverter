@@ -11,6 +11,8 @@ import android.app.Dialog;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.Context;
 import android.content.Loader;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
@@ -33,6 +35,10 @@ import android.widget.Toast;
  * @author SergeyKarleev
  * 
  */
+/**
+ * @author skar011
+ * 
+ */
 public class MainActivity extends Activity implements OnKeyListener,
 		LoaderCallbacks<String> {
 
@@ -41,7 +47,7 @@ public class MainActivity extends Activity implements OnKeyListener,
 
 	final static int LOADER_DAY = 1;
 	final static int LOADER_MONTH = 2;
-	
+
 	final static int INFOVIEW_NONE = 0;
 	final static int INFOVIEW_GRAPH = 1;
 	final static int INFOVIEW_TABLE = 2;
@@ -66,7 +72,7 @@ public class MainActivity extends Activity implements OnKeyListener,
 
 	LinearLayout llContainer;
 	ListView lView;
-	
+
 	int infoView = INFOVIEW_NONE;
 
 	int mYear = 2015;
@@ -75,7 +81,6 @@ public class MainActivity extends Activity implements OnKeyListener,
 
 	static MyMonthQuotesObject mQuotesObject;
 	MyGraphClass mGraphObject;
-	 
 
 	private static double multiplicator_USD = 1;
 	private static double multiplicator_EUR = 1;
@@ -155,7 +160,9 @@ public class MainActivity extends Activity implements OnKeyListener,
 					dayOfMonth);
 			btnDate.setText(MyRequestHelper.getDate(year, monthOfYear,
 					dayOfMonth));
+
 			createRequest(LOADER_DAY, request);
+
 		}
 	};
 
@@ -164,6 +171,10 @@ public class MainActivity extends Activity implements OnKeyListener,
 		int year;
 		int monthOfYear;
 		String valute;
+
+		if (!isOnline()){
+			Toast.makeText(context, "Интернет-соединение недоступно", Toast.LENGTH_SHORT).show();
+			return;}
 		
 		switch (v.getId()) {
 		case R.id.btnDate:
@@ -184,27 +195,30 @@ public class MainActivity extends Activity implements OnKeyListener,
 			} else if (!mQuotesObject.isComparised(spYear.getSelectedItem()
 					.toString(), spMonth.getSelectedItem().toString(),
 					spValutes.getSelectedItem().toString())) {
-				Log.d(LOG_TAG, "Входящие данные изменились. Получаем новые значения");
+				Log.d(LOG_TAG,
+						"Входящие данные изменились. Получаем новые значения");
 				mQuotesObject.clearQuotesList();
 				createRequest(LOADER_MONTH, MyRequestHelper.getMonthRequest(
 						year, monthOfYear, valute));
-			}else{
-				Log.d(LOG_TAG, "Строим график по существующим значениям\nвсего значений: "+mQuotesObject.getQuotesList().length);
+			} else {
+				Log.d(LOG_TAG,
+						"Строим график по существующим значениям\nвсего значений: "
+								+ mQuotesObject.getQuotesList().length);
 				createGraph(mQuotesObject);
-			}			
-			
+			}
+
 			infoView = INFOVIEW_GRAPH;
 			break;
 		case R.id.btnGetTable:
-			
+
 			year = Integer.valueOf(spYear.getSelectedItem().toString());
 			monthOfYear = spMonth.getSelectedItemPosition();
 			valute = spValutes.getSelectedItem().toString();
 
 			if (mQuotesObject.isEmptyQuotes()) {
 				mQuotesObject.setData(spYear.getSelectedItem().toString(),
-						spMonth.getSelectedItem().toString(), 
-						spValutes.getSelectedItem().toString());
+						spMonth.getSelectedItem().toString(), spValutes
+								.getSelectedItem().toString());
 				createRequest(LOADER_MONTH, MyRequestHelper.getMonthRequest(
 						year, monthOfYear, valute));
 				Log.d(LOG_TAG, "Значений нет. Получаем значения");
@@ -212,19 +226,22 @@ public class MainActivity extends Activity implements OnKeyListener,
 			} else if (!mQuotesObject.isComparised(spYear.getSelectedItem()
 					.toString(), spMonth.getSelectedItem().toString(),
 					spValutes.getSelectedItem().toString())) {
-				Log.d(LOG_TAG, "Входящие данные изменились. Получаем новые значения");
+				Log.d(LOG_TAG,
+						"Входящие данные изменились. Получаем новые значения");
 				mQuotesObject.clearQuotesList();
 				mQuotesObject.setData(spYear.getSelectedItem().toString(),
-						spMonth.getSelectedItem().toString(), 
-						spValutes.getSelectedItem().toString());
+						spMonth.getSelectedItem().toString(), spValutes
+								.getSelectedItem().toString());
 				createRequest(LOADER_MONTH, MyRequestHelper.getMonthRequest(
 						year, monthOfYear, valute));
-			}else{
-				Log.d(LOG_TAG, "Строим график по существующим значениям\nвсего значений: "+mQuotesObject.getQuotesList().length);
+			} else {
+				Log.d(LOG_TAG,
+						"Строим график по существующим значениям\nвсего значений: "
+								+ mQuotesObject.getQuotesList().length);
 				createTable(mQuotesObject);
-			}			
-			
-			infoView = INFOVIEW_TABLE;			
+			}
+
+			infoView = INFOVIEW_TABLE;
 			break;
 		default:
 			break;
@@ -294,24 +311,25 @@ public class MainActivity extends Activity implements OnKeyListener,
 
 	protected void createTable(MyMonthQuotesObject mQList) {
 		llContainer.removeAllViews();
-		
-		String[] listItems = {"Нет котировок по данному запросу"}; 
+
+		String[] listItems = { "Нет котировок по данному запросу" };
 		try {
-			listItems = mQList.getQuoteListForTable();	
+			listItems = mQList.getQuoteListForTable();
 		} catch (Exception e) {
 			// TODO: handle exception
 		}
-		
-		LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+
+		LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+				LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
 		TextView tvHeader = new TextView(context);
 		tvHeader.setText(mQuotesObject.getMonthAndYear());
-		
+
 		tvHeader.setLayoutParams(params);
-		tvHeader.setGravity(Gravity.CENTER_HORIZONTAL);		
-		
-		
+		tvHeader.setGravity(Gravity.CENTER_HORIZONTAL);
+
 		lView = new ListView(context);
-		ArrayAdapter<String> adapter = new ArrayAdapter<>(context, android.R.layout.simple_list_item_1, listItems);
+		ArrayAdapter<String> adapter = new ArrayAdapter<>(context,
+				android.R.layout.simple_list_item_1, listItems);
 		lView.setAdapter(adapter);
 		lView.setLayoutParams(params);
 		llContainer.addView(tvHeader);
@@ -357,7 +375,7 @@ public class MainActivity extends Activity implements OnKeyListener,
 			MyMonthParser mMonthParser = new MyMonthParser(data);
 			mQuotesObject.setQuotesList(mMonthParser.getQuotesList());
 			getLoaderManager().destroyLoader(LOADER_MONTH);
-			
+
 			switch (infoView) {
 			case INFOVIEW_GRAPH:
 				createGraph(mQuotesObject);
@@ -367,7 +385,7 @@ public class MainActivity extends Activity implements OnKeyListener,
 				break;
 			default:
 				break;
-			}			
+			}
 			infoView = INFOVIEW_NONE;
 			break;
 		default:
@@ -380,6 +398,21 @@ public class MainActivity extends Activity implements OnKeyListener,
 	public void onLoaderReset(Loader<String> loader) {
 		// TODO Auto-generated method stub
 
+	}
+
+	/**
+	 * Метод проверяет наличие соединения с интернетом.
+	 * 
+	 * @return boolean
+	 */
+	public boolean isOnline() {
+		ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+		NetworkInfo ni = cm.getActiveNetworkInfo();
+		if (ni == null) {
+			// There are no active networks.
+			return false;
+		} else
+			return true;
 	}
 
 }
